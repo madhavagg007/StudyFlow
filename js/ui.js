@@ -1,0 +1,8 @@
+// StudyFlow: Dialogs, global listeners and swipe navigation
+function openSheet(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('open')}
+function closeModal(){if(timer.on)return;document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});document.addEventListener('keydown',e=>{if(timer.on){e.preventDefault();e.stopPropagation();return;}if(e.key==='Escape')closeModal()});
+document.addEventListener('visibilitychange',()=>{if(timer.on && document.visibilityState==='visible'){requestWakeLock();toast('Focus Lock is still running. Stay with your session.');updateFocusLockClock()}});
+window.addEventListener('popstate',e=>{if(timer.on){history.pushState(null,'',location.href);e.preventDefault()}});
+window.addEventListener('beforeunload',()=>{save()});
+(function(){const order=['Today','Syllabus','Backlog','Revision','Mistakes','Tests','Focus','Progress'];let sx=0,sy=0,active=false;const app=document.getElementById('app');if(!app)return;app.addEventListener('touchstart',e=>{if(timer.on||document.getElementById('modal').classList.contains('open'))return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;active=true},{passive:true});app.addEventListener('touchend',e=>{if(!active)return;active=false;let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.4)return;let i=order.indexOf(tab);if(dx<0&&i<order.length-1)go(order[i+1]);else if(dx>0&&i>0)go(order[i-1])},{passive:true});})();
