@@ -1,0 +1,3 @@
+// StudyFlow: starter data (used only to recognise and clean up legacy sample chapters)
+const STARTER_SUBJECTS=[{id:'general',name:'General'}];
+const STARTER_CHAPTERS={physics:['Units & Measurements','Motion in a Straight Line','Motion in a Plane','Laws of Motion','Work, Energy & Power','System of Particles & Rotational Motion'],chemistry:['Some Basic Concepts of Chemistry','Structure of Atom','Classification of Elements','Chemical Bonding','Thermodynamics','Equilibrium'],mathematics:['Sets','Relations & Functions','Trigonometric Functions','Complex Numbers','Permutations & Combinations','Binomial Theorem']};
