@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1f5d4f"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="StudyFlow"><meta name="description" content="StudyFlow — a private, adaptive study system that plans your day from mastery, revisions and mistakes."><title>StudyFlow · Private Study OS</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body><div id="lockScreen" class="lock-screen" style="display:none" role="dialog" aria-modal="true" aria-label="Enter PIN to unlock StudyFlow"><div class="lock-card"><div class="mark" style="margin:0 auto 14px">S</div><h2 style="margin:0 0 4px">Enter your PIN</h2><p class="muted" style="margin:0 0 14px">Your data is encrypted on this device.</p><input id="lockPin" class="input" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN" style="text-align:center;font-size:20px;letter-spacing:6px" onkeydown="if(event.key==='Enter')attemptUnlock()"><div id="lockError" style="color:#b65d4b;font-size:13px;min-height:18px;margin:8px 0"></div><button class="btn" style="width:100%" onclick="attemptUnlock()">Unlock</button><button class="btn light" style="width:100%;margin-top:8px;font-size:12px" onclick="forgotPin()">Forgot PIN? Erase this device's data</button></div></div><div class="shell"><header class="top"><div class="logo"><div class="mark">S</div><div><div class="eyebrow">Personal study system</div><div class="brand">StudyFlow</div></div></div><div class="top-actions"><button class="btn light small" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle light or dim theme">Dim</button><button class="btn light" onclick="openSettings()" aria-label="Open settings">Settings</button><button class="btn soft" onclick="openAdd()" aria-label="Add study record">+ Add</button></div></header><nav class="nav" id="nav"></nav><main id="app"></main></div><div class="bottom"><div class="bottom-inner" id="bottom"></div></div><div id="focusLock" class="focus-lock" aria-hidden="true"><div class="focus-lock-inner"><div class="focus-lock-badge"><span class="focus-lock-dot"></span> FOCUS LOCK</div><div class="focus-lock-title">Stay with one thing.</div><div class="focus-lock-timer" id="focusLockTimer">00:00</div><div class="focus-lock-sub">Stay focused while your study book grows page by page.</div><div class="focus-lock-book"><div class="eyebrow">YOUR STUDY BOOK</div><div class="focus-lock-book-stage"><div class="focus-lock-forming-book" id="focusLockBook"><div class="focus-lock-pages" id="focusLockPages"></div><div class="focus-lock-page-stack" id="focusLockPageStack"></div><div class="focus-lock-book-title" id="focusLockBookTitle">Focus Session</div><div class="focus-lock-forming-cover"></div></div></div><div class="focus-lock-book-status" id="focusLockBookStatus">Your book is forming…</div><div class="focus-lock-book-progress" id="focusLockBookProgress">0 pages added · 0% formed</div></div><div class="focus-lock-chapter" id="focusLockChapter">General study session</div></div></div><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="StudyFlow dialog"><div class="sheet" id="sheet"></div></div>
+<script src="data/starter.js"></script>
+<script src="js/priority.js"></script>
+<script src="js/core.js"></script>
+<script src="js/lock.js"></script>
+<script src="js/cloud-sync.js"></script>
+<script src="js/intelligence.js"></script>
+<script src="js/views.js"></script>
+<script src="js/backlog.js"></script>
+<script src="js/insights.js"></script>
+<script src="js/syllabus-revision.js"></script>
+<script src="js/mistakes-tests.js"></script>
+<script src="js/focus.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

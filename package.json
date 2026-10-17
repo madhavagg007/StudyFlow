@@ -1,0 +1,11 @@
+{
+  "name": "studyflow",
+  "version": "2.1.0",
+  "description": "Private, on-device study tracker with an adaptive prioritization engine, backlog planner and encrypted local storage.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/*.test.js tests/e2e/*.test.js",
+    "build": "node scripts/build.js",
+    "check": "node scripts/check.js"
+  }
+}
