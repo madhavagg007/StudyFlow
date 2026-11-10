@@ -1,0 +1,13 @@
+{
+  "name": "StudyFlow",
+  "short_name": "StudyFlow",
+  "description": "Private, on-device study tracker with adaptive plans, focus timer, backlog planner and revision tracking.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f2eee6",
+  "theme_color": "#1f5d4f",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

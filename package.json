@@ -1,6 +1,6 @@
 {
   "name": "studyflow",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Private, on-device study tracker with an adaptive prioritization engine, backlog planner and encrypted local storage.",
   "license": "MIT",
   "scripts": {
