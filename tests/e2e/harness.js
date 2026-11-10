@@ -10,7 +10,7 @@ const root = path.join(__dirname, "..", "..");
 function makeEl(id) {
   const cls = new Set();
   const el = {
-    id, value: "", style: {}, dataset: {}, children: [], files: [], checked: false, _html: "", _text: "",
+    id, value: "", style: { setProperty(k, v) { this[k] = v; } }, dataset: {}, children: [], files: [], checked: false, _html: "", _text: "",
     classList: {
       add: (...c) => c.forEach((x) => cls.add(x)),
       remove: (...c) => c.forEach((x) => cls.delete(x)),
@@ -28,7 +28,29 @@ function makeEl(id) {
   return el;
 }
 
-function boot({ storage = new Map(), prompts = [] } = {}) {
+function makeFakeDate(fake) {
+  return class FakeDate extends Date {
+    constructor(...a) { if (a.length === 0) super(fake.t); else super(...a); }
+    static now() { return fake.t; }
+  };
+}
+
+function makeAudioContext(a) {
+  return class StubAudioContext {
+    constructor() { a.contexts++; this.sampleRate = 44100; this.currentTime = 0; this.destination = {}; this.state = "running"; }
+    createBuffer(ch, len) { return { getChannelData: () => new Float32Array(len) }; }
+    createBufferSource() { return { buffer: null, loop: false, connect() {}, start() { a.sources++; }, stop() { a.stopped++; } }; }
+    createBiquadFilter() { return { type: "", frequency: { value: 0 }, Q: { value: 0 }, connect() {} }; }
+    createGain() { return { gain: { value: 1, linearRampToValueAtTime() {}, cancelScheduledValues() {} }, connect() {}, disconnect() {} }; }
+    createOscillator() { return { type: "", frequency: { value: 0 }, connect() {}, start() { a.osc++; }, stop() {} }; }
+    resume() { a.resumed++; return Promise.resolve(); }
+    suspend() { a.suspended++; return Promise.resolve(); }
+  };
+}
+
+function boot({ storage = new Map(), prompts = [], clock = false } = {}) {
+  const fake = { t: Date.now() };
+  const audio = { sources: 0, osc: 0, stopped: 0, suspended: 0, resumed: 0, contexts: 0 };
   const els = new Map();
   const errors = [];
   const getEl = (id) => { if (!els.has(id)) els.set(id, makeEl(id)); return els.get(id); };
@@ -53,9 +75,11 @@ function boot({ storage = new Map(), prompts = [] } = {}) {
     innerWidth: 390, innerHeight: 800, requestAnimationFrame: (f) => timers(f, 0),
     addEventListener() {}, removeEventListener() {},
     setTimeout: timers, clearTimeout, setInterval: (f, ms) => { const t = setInterval(f, ms); t.unref && t.unref(); return t; }, clearInterval,
-    URL, Blob, TextEncoder, TextDecoder, atob, btoa, crypto: require("crypto").webcrypto,
-    Date, Math, JSON, Promise, Number, String, Array, Object, Set, Map, Error, Image: function () {}, FileReader: function () {},
+    URL: { createObjectURL: (b) => { ctx.__lastBlob = b; return "blob:smoke"; }, revokeObjectURL() {} },
+    File: require("buffer").File, Blob, TextEncoder, TextDecoder, atob, btoa, crypto: require("crypto").webcrypto,
+    Date: clock ? makeFakeDate(fake) : Date, Math, JSON, Promise, Number, String, Array, Object, Set, Map, Error, Image: function () {}, FileReader: function () {},
     alert() {}, confirm: () => true, prompt: () => (prompts.length ? prompts.shift() : null),
+    AudioContext: makeAudioContext(audio), __audio: audio,
     print() { ctx.__printed = (ctx.__printed || 0) + 1; },
   };
   ctx.window = ctx; ctx.self = ctx; ctx.globalThis = ctx;
@@ -66,7 +90,7 @@ function boot({ storage = new Map(), prompts = [] } = {}) {
   for (const s of scripts) vm.runInContext(fs.readFileSync(path.join(root, s), "utf8"), ctx, { filename: s });
 
   return {
-    ctx, storage, errors, el: getEl,
+    ctx, storage, errors, el: getEl, audio, advance: (ms) => { fake.t += ms; },
     ev: (code) => vm.runInContext(code, ctx),
     wait: (ms = 20) => new Promise((r) => setTimeout(r, ms)),
   };
