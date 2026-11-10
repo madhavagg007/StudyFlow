@@ -16,17 +16,33 @@ Scripts are classic (non-module) scripts that share one global scope, so **order
 | `js/intelligence.js` | Navigation, stats, task ranking built on the priority engine |
 | `js/views.js` | Today, progress and shared views |
 | `js/backlog.js` | Backlog planner, exam readiness, printable report |
+| `js/tasks.js` | Task lists and focus-on-task link |
 | `js/insights.js` | Toast, end-of-day review, weekly insight |
 | `js/syllabus-revision.js` | Syllabus map and spaced revision |
 | `js/mistakes-tests.js` | Mistake log and test tracking |
 | `js/focus.js` | Focus timer, forming-book animation and study library |
+| `js/timer.js` | Timer engine: countdown, Pomodoro, stopwatch, pause, extend, finish early |
+| `js/audio.js` | Web Audio soundscape synthesis and controls |
 | `js/settings.js` | Subjects, settings, onboarding, import/export, reset |
+| `js/backup.js` | Passphrase-encrypted backup and restore (also `require`-able for tests) |
 | `js/ui.js` | Dialogs, global listeners, swipe navigation |
 | `js/main.js` | Error reporting and boot |
 
 ## Data model
 
 One JSON object (`state`) holds `profile`, `chapters`, `revisions`, `mistakes`, `tests`, `sessions` and `completedActions`. A backlog item is simply a chapter with `backlog: true`, `backlogEst` (minutes), `backlogDue` and `backlogAdded`. Time spent against it is derived from `sessions`, so there is no duplicated counter to drift.
+
+## Timer
+
+The clock is derived from timestamps (`startedAt`, `endAt`) rather than counting ticks, so it stays correct when the browser throttles a background tab. Pausing shifts both timestamps by the paused gap. A Pomodoro run alternates `focus`, `short` and `long` phases; only focus phases are logged, and finishing early logs the whole minutes actually studied.
+
+## Task lists
+
+`state.taskLists` is an array of `{ id, name, tasks: [{ id, text, done, due }] }`. Migration drops malformed entries. A session can be linked to a task through `profile.focusTaskId`.
+
+## Soundscapes
+
+Sounds are synthesized, not downloaded: looped white, pink or brown noise buffers shaped with filters and slow oscillators. This keeps the app offline-capable and adds no assets.
 
 ## Storage and encryption
 
