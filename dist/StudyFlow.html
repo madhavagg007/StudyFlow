@@ -168,9 +168,29 @@ img,svg,canvas{max-width:100%;height:auto}
 
 \n.insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.insight-chart{height:190px;display:flex;align-items:flex-end;gap:7px;padding:18px 8px 8px;border-top:1px solid var(--line)}.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}.chart-bar{width:100%;max-width:28px;border-radius:8px 8px 3px 3px;background:var(--accent);min-height:4px}.chart-label{font-size:9px;color:var(--muted);font-weight:800}.why-box{margin-top:9px;padding:10px 12px;border-radius:12px;background:var(--paper2);border:1px solid var(--line);font-size:12px}.why-box b{color:var(--ink)}.days-away{padding:10px 12px;border-radius:12px;background:#fbf2df;border:1px solid #e8d5aa;color:#76591e;font-size:12px;font-weight:750}.pattern-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}@media(max-width:700px){.insight-grid{grid-template-columns:1fr}}\n
 .mistake-photo{margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#f3efe7;max-width:360px}.mistake-photo img{display:block;width:100%;height:auto;max-height:280px;object-fit:contain}.mistake-photo-preview{margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;max-width:280px}.mistake-photo-preview img{display:block;width:100%;max-height:180px;object-fit:cover}
+
+/* v2.2: timer modes, soundscapes, task lists, lock controls */
+.focus-lock-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.focus-lock-controls .btn{padding:9px 14px;font-size:13px}
+.focus-lock.on-break .focus-lock-book{display:none}
+.focus-lock.paused .focus-lock-timer{opacity:.45}
+.focus-panel input[type=range]{width:100%;accent-color:var(--accent)}
+.focus-panel input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.task-lists{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none;margin-top:10px}
+.task-lists::-webkit-scrollbar{display:none}
+.task-lists .focus-preset{flex:0 0 auto}
+.task-add{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
+.task-add .input{min-width:0}
+.task-line{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.task-line:last-child{border-bottom:0}
+.task-line .task-copy{flex:1;min-width:0;overflow-wrap:anywhere}
+.task-mini{padding:5px 11px;font-size:12px}
+.task-del{border:0;background:transparent;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:0 6px}
+.task-chip-actions{display:flex;gap:6px;margin-top:8px}
+@media (max-width:480px){.task-add{grid-template-columns:1fr auto}.task-add #taskDue{grid-column:1/2}}
 </style>
 </head>
-<body><div id="lockScreen" class="lock-screen" style="display:none" role="dialog" aria-modal="true" aria-label="Enter PIN to unlock StudyFlow"><div class="lock-card"><div class="mark" style="margin:0 auto 14px">S</div><h2 style="margin:0 0 4px">Enter your PIN</h2><p class="muted" style="margin:0 0 14px">Your data is encrypted on this device.</p><input id="lockPin" class="input" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN" style="text-align:center;font-size:20px;letter-spacing:6px" onkeydown="if(event.key==='Enter')attemptUnlock()"><div id="lockError" style="color:#b65d4b;font-size:13px;min-height:18px;margin:8px 0"></div><button class="btn" style="width:100%" onclick="attemptUnlock()">Unlock</button><button class="btn light" style="width:100%;margin-top:8px;font-size:12px" onclick="forgotPin()">Forgot PIN? Erase this device's data</button></div></div><div class="shell"><header class="top"><div class="logo"><div class="mark">S</div><div><div class="eyebrow">Personal study system</div><div class="brand">StudyFlow</div></div></div><div class="top-actions"><button class="btn light small" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle light or dim theme">Dim</button><button class="btn light" onclick="openSettings()" aria-label="Open settings">Settings</button><button class="btn soft" onclick="openAdd()" aria-label="Add study record">+ Add</button></div></header><nav class="nav" id="nav"></nav><main id="app"></main></div><div class="bottom"><div class="bottom-inner" id="bottom"></div></div><div id="focusLock" class="focus-lock" aria-hidden="true"><div class="focus-lock-inner"><div class="focus-lock-badge"><span class="focus-lock-dot"></span> FOCUS LOCK</div><div class="focus-lock-title">Stay with one thing.</div><div class="focus-lock-timer" id="focusLockTimer">00:00</div><div class="focus-lock-sub">Stay focused while your study book grows page by page.</div><div class="focus-lock-book"><div class="eyebrow">YOUR STUDY BOOK</div><div class="focus-lock-book-stage"><div class="focus-lock-forming-book" id="focusLockBook"><div class="focus-lock-pages" id="focusLockPages"></div><div class="focus-lock-page-stack" id="focusLockPageStack"></div><div class="focus-lock-book-title" id="focusLockBookTitle">Focus Session</div><div class="focus-lock-forming-cover"></div></div></div><div class="focus-lock-book-status" id="focusLockBookStatus">Your book is forming…</div><div class="focus-lock-book-progress" id="focusLockBookProgress">0 pages added · 0% formed</div></div><div class="focus-lock-chapter" id="focusLockChapter">General study session</div></div></div><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="StudyFlow dialog"><div class="sheet" id="sheet"></div></div>
+<body><div id="lockScreen" class="lock-screen" style="display:none" role="dialog" aria-modal="true" aria-label="Enter PIN to unlock StudyFlow"><div class="lock-card"><div class="mark" style="margin:0 auto 14px">S</div><h2 style="margin:0 0 4px">Enter your PIN</h2><p class="muted" style="margin:0 0 14px">Your data is encrypted on this device.</p><input id="lockPin" class="input" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN" style="text-align:center;font-size:20px;letter-spacing:6px" onkeydown="if(event.key==='Enter')attemptUnlock()"><div id="lockError" style="color:#b65d4b;font-size:13px;min-height:18px;margin:8px 0"></div><button class="btn" style="width:100%" onclick="attemptUnlock()">Unlock</button><button class="btn light" style="width:100%;margin-top:8px;font-size:12px" onclick="forgotPin()">Forgot PIN? Erase this device's data</button></div></div><div class="shell"><header class="top"><div class="logo"><div class="mark">S</div><div><div class="eyebrow">Personal study system</div><div class="brand">StudyFlow</div></div></div><div class="top-actions"><button class="btn light small" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle light or dim theme">Dim</button><button class="btn light" onclick="openSettings()" aria-label="Open settings">Settings</button><button class="btn soft" onclick="openAdd()" aria-label="Add study record">+ Add</button></div></header><nav class="nav" id="nav"></nav><main id="app"></main></div><div class="bottom"><div class="bottom-inner" id="bottom"></div></div><div id="focusLock" class="focus-lock" aria-hidden="true"><div class="focus-lock-inner"><div class="focus-lock-badge"><span class="focus-lock-dot"></span> <span id="focusLockBadgeText">FOCUS LOCK</span></div><div class="focus-lock-title" id="focusLockTitle">Stay with one thing.</div><div class="focus-lock-timer" id="focusLockTimer">00:00</div><div class="focus-lock-sub" id="focusLockSub">Stay focused while your study book grows page by page.</div><div class="focus-lock-book"><div class="eyebrow">YOUR STUDY BOOK</div><div class="focus-lock-book-stage"><div class="focus-lock-forming-book" id="focusLockBook"><div class="focus-lock-pages" id="focusLockPages"></div><div class="focus-lock-page-stack" id="focusLockPageStack"></div><div class="focus-lock-book-title" id="focusLockBookTitle">Focus Session</div><div class="focus-lock-forming-cover"></div></div></div><div class="focus-lock-book-status" id="focusLockBookStatus">Your book is forming…</div><div class="focus-lock-book-progress" id="focusLockBookProgress">0 pages added · 0% formed</div></div><div class="focus-lock-chapter" id="focusLockChapter">General study session</div><div class="focus-lock-controls"><button class="btn light" id="flPause" onclick="togglePause()">Pause</button><button class="btn light" id="flExtend" onclick="extendTimer(5)">+5 min</button><button class="btn light" id="flSound" onclick="toggleSoundNow()">Sound off</button><button class="btn soft" id="flFinish" onclick="finishTimerEarly()">Finish early</button></div></div></div><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="StudyFlow dialog"><div class="sheet" id="sheet"></div></div>
 <script>
 // StudyFlow: starter data (used only to recognise and clean up legacy sample chapters)
 const STARTER_SUBJECTS=[{id:'general',name:'General'}];
@@ -252,8 +272,8 @@ const pct=(n,d)=>d?Math.round(n/d*100):0;
 const subjectList=()=>Array.isArray(state?.profile?.subjects)?state.profile.subjects:[];
 const subjectNames=()=>subjectList().map(s=>s.name);
 function makeStarterChapters(){let chapters=[];STARTER_SUBJECTS.forEach(s=>(STARTER_CHAPTERS[s.id]||[]).forEach(name=>chapters.push({id:uid(),subject:s.name,name,status:'Not started',mastery:0,confidence:0,lastStudied:null,streak:0})));return chapters}
-function fresh(){return {version:APP_VERSION,schema:'studyflow',profile:{name:'',exam:'',dailyGoal:90,actionCount:5,planMode:'adaptive',blockMax:25,focusMinutes:25,focusAutoLog:true,focusChapterId:'',sessionConfidence:3,includeRevisions:true,includeMistakes:true,includeChapters:true,customActions:[],customPlan:[],onboarded:false,pilotConsent:false,pilotId:'',todayContexts:{},intentions:{},subjects:STARTER_SUBJECTS.map(x=>({...x}))},chapters:[],revisions:[],mistakes:[],tests:[],sessions:[],tasks:[],created:today(),weeklyReviews:[],completedActions:[]}}
-function migrate(input){let x=input&&typeof input==='object'?input:fresh();let legacyVersion=Number.isFinite(Number(x.version))?Number(x.version):0;let base=fresh();x.profile=Object.assign(base.profile,x.profile||{});x.chapters=Array.isArray(x.chapters)?x.chapters:[];x.revisions=Array.isArray(x.revisions)?x.revisions:[];x.mistakes=Array.isArray(x.mistakes)?x.mistakes:[];x.tests=Array.isArray(x.tests)?x.tests:[];x.sessions=Array.isArray(x.sessions)?x.sessions:[];x.tasks=Array.isArray(x.tasks)?x.tasks:[];x.weeklyReviews=Array.isArray(x.weeklyReviews)?x.weeklyReviews:[];x.completedActions=Array.isArray(x.completedActions)?x.completedActions:[];if(!Array.isArray(x.profile.subjects)||!x.profile.subjects.length){let names=[...new Set(x.chapters.map(c=>c.subject).filter(Boolean))];x.profile.subjects=(names.length?names:STARTER_SUBJECTS.map(s=>s.name)).map((name,i)=>({id:'subject-'+i+'-'+String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-'),name}))}x.profile.todayContexts=x.profile.todayContexts||{};x.profile.intentions=x.profile.intentions||{};x.profile.customActions=x.profile.customActions||[];x.profile.customPlan=x.profile.customPlan||[];x.chapters.forEach(c=>{c.id=c.id||uid();c.subject=String(c.subject||x.profile.subjects[0]?.name||'General');c.name=String(c.name||'Untitled chapter');if(c.confidence==null)c.confidence=Math.round((c.mastery||0)/20);if(c.lastStudied===undefined)c.lastStudied=null;if(c.streak==null)c.streak=0});x.version=APP_VERSION;x.schema='studyflow';x.migratedFrom=legacyVersion;return x}
+function fresh(){return {version:APP_VERSION,schema:'studyflow',profile:{name:'',exam:'',dailyGoal:90,actionCount:5,planMode:'adaptive',blockMax:25,focusMinutes:25,timerMode:'countdown',breakMinutes:5,longBreakMinutes:15,cyclesBeforeLong:4,autoNext:false,sound:'',soundVolume:40,focusTaskId:'',activeTaskList:'',focusAutoLog:true,focusChapterId:'',sessionConfidence:3,includeRevisions:true,includeMistakes:true,includeChapters:true,customActions:[],customPlan:[],onboarded:false,pilotConsent:false,pilotId:'',todayContexts:{},intentions:{},subjects:STARTER_SUBJECTS.map(x=>({...x}))},chapters:[],revisions:[],mistakes:[],tests:[],sessions:[],tasks:[],taskLists:[],created:today(),weeklyReviews:[],completedActions:[]}}
+function migrate(input){let x=input&&typeof input==='object'?input:fresh();let legacyVersion=Number.isFinite(Number(x.version))?Number(x.version):0;let base=fresh();x.profile=Object.assign(base.profile,x.profile||{});x.chapters=Array.isArray(x.chapters)?x.chapters:[];x.revisions=Array.isArray(x.revisions)?x.revisions:[];x.mistakes=Array.isArray(x.mistakes)?x.mistakes:[];x.tests=Array.isArray(x.tests)?x.tests:[];x.sessions=Array.isArray(x.sessions)?x.sessions:[];x.tasks=Array.isArray(x.tasks)?x.tasks:[];x.taskLists=(Array.isArray(x.taskLists)?x.taskLists:[]).filter(l=>l&&typeof l==='object').map(l=>({id:String(l.id||uid()),name:String(l.name||'List').slice(0,40),tasks:(Array.isArray(l.tasks)?l.tasks:[]).filter(t=>t&&typeof t==='object'&&t.text).map(t=>({id:String(t.id||uid()),text:String(t.text).slice(0,140),done:!!t.done,due:/^\d{4}-\d{2}-\d{2}$/.test(t.due||'')?t.due:'',created:t.created||'',doneAt:t.doneAt||''}))}));x.weeklyReviews=Array.isArray(x.weeklyReviews)?x.weeklyReviews:[];x.completedActions=Array.isArray(x.completedActions)?x.completedActions:[];if(!Array.isArray(x.profile.subjects)||!x.profile.subjects.length){let names=[...new Set(x.chapters.map(c=>c.subject).filter(Boolean))];x.profile.subjects=(names.length?names:STARTER_SUBJECTS.map(s=>s.name)).map((name,i)=>({id:'subject-'+i+'-'+String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-'),name}))}x.profile.todayContexts=x.profile.todayContexts||{};x.profile.intentions=x.profile.intentions||{};x.profile.customActions=x.profile.customActions||[];x.profile.customPlan=x.profile.customPlan||[];x.chapters.forEach(c=>{c.id=c.id||uid();c.subject=String(c.subject||x.profile.subjects[0]?.name||'General');c.name=String(c.name||'Untitled chapter');if(c.confidence==null)c.confidence=Math.round((c.mastery||0)/20);if(c.lastStudied===undefined)c.lastStudied=null;if(c.streak==null)c.streak=0});x.version=APP_VERSION;x.schema='studyflow';x.migratedFrom=legacyVersion;return x}
 let lockedEnvelope=null,lockKey=null,lockActive=false,lockSalt=null,lockIter=150000;
 function load(){try{for(const key of [KEY,...LEGACY_KEYS]){const raw=localStorage.getItem(key);if(raw){const parsed=JSON.parse(raw);if(parsed&&parsed.locked===true){lockedEnvelope=parsed;return fresh()}return migrate(parsed)}}return fresh()}catch(e){console.error(e);return fresh()}}
 let state=load(),tab='Today',timer={on:false,sec:(state.profile.focusMinutes||25)*60},interval=null,wakeLock=null;
@@ -268,7 +288,7 @@ let lockWriteQueued=false,lockWriting=false;
 function queueLockSave(){lockWriteQueued=true;flushLockSave()}
 async function flushLockSave(){if(lockWriting||!lockActive||!lockKey)return;lockWriting=true;lockWriteQueued=false;try{const env=await encryptStateEnvelope(lockSalt,lockIter);localStorage.setItem(KEY,JSON.stringify(env))}catch(e){console.warn('Encrypted save failed',e)}lockWriting=false;if(lockWriteQueued)flushLockSave()}
 async function attemptUnlock(){const pin=document.getElementById('lockPin').value,err=document.getElementById('lockError');if(!pin){err.textContent='Enter your PIN.';return}
-  try{const key=await deriveLockKey(pin,lockedEnvelope.salt,lockedEnvelope.iter);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(lockedEnvelope.iv)},key,b64d(lockedEnvelope.data));state=migrate(JSON.parse(new TextDecoder().decode(pt)));lockKey=key;lockActive=true;lockSalt=lockedEnvelope.salt;lockIter=lockedEnvelope.iter;document.getElementById('lockScreen').style.display='none';state=validateState();render();applyTheme();setTimeout(maybeSuggestBackup,2500);setTimeout(initCloudSync,300)}
+  try{const key=await deriveLockKey(pin,lockedEnvelope.salt,lockedEnvelope.iter);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(lockedEnvelope.iv)},key,b64d(lockedEnvelope.data));state=migrate(JSON.parse(new TextDecoder().decode(pt)));timer=idleTimer();lockKey=key;lockActive=true;lockSalt=lockedEnvelope.salt;lockIter=lockedEnvelope.iter;document.getElementById('lockScreen').style.display='none';state=validateState();render();applyTheme();setTimeout(maybeSuggestBackup,2500);setTimeout(initCloudSync,300)}
   catch(e){err.textContent='Incorrect PIN. Try again.'}}
 function forgotPin(){if(confirm('This permanently erases ALL StudyFlow data on this device. Encrypted data cannot be recovered without the correct PIN. Continue?')){localStorage.removeItem(KEY);(LEGACY_KEYS||[]).forEach(k=>localStorage.removeItem(k));location.reload()}}
 function promptEnableLock(){const pin=prompt('Choose a PIN (at least 4 characters):');if(!pin||pin.length<4){if(pin!==null)toast('PIN must be at least 4 characters.');return}const confirmPin=prompt('Confirm your PIN:');if(confirmPin!==pin){toast('PINs did not match.');return}(async()=>{const salt=b64e(crypto.getRandomValues(new Uint8Array(16)).buffer);lockSalt=salt;lockIter=150000;lockKey=await deriveLockKey(pin,salt,lockIter);lockActive=true;await flushLockSave();toast('App Lock enabled — your data is now encrypted on this device.');closeModal();openSettings()})()}
@@ -307,14 +327,14 @@ async function flushCloudSync(){
   if(cloudPending)flushCloudSync();
 }
 function safeNumber(v,min,max,fallback){let n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback}
-function validateState(){if(!state||typeof state!=='object')state=fresh();state.chapters=Array.isArray(state.chapters)?state.chapters:[];state.revisions=Array.isArray(state.revisions)?state.revisions:[];state.mistakes=Array.isArray(state.mistakes)?state.mistakes:[];state.tests=Array.isArray(state.tests)?state.tests:[];state.sessions=Array.isArray(state.sessions)?state.sessions:[];state.completedActions=Array.isArray(state.completedActions)?state.completedActions:[];state.profile=state.profile||fresh().profile;state.profile.subjects=Array.isArray(state.profile.subjects)&&state.profile.subjects.length?state.profile.subjects:fresh().profile.subjects;state.profile.dailyGoal=safeNumber(state.profile.dailyGoal,15,600,90);state.profile.focusMinutes=safeNumber(state.profile.focusMinutes,5,120,25);state.profile.actionCount=safeNumber(state.profile.actionCount,1,8,5);state.profile.blockMax=safeNumber(state.profile.blockMax,5,120,45);state.profile.todayContexts=(state.profile.todayContexts&&typeof state.profile.todayContexts==='object')?state.profile.todayContexts:{};state.profile.intentions=(state.profile.intentions&&typeof state.profile.intentions==='object')?state.profile.intentions:{};state.profile.customActions=Array.isArray(state.profile.customActions)?state.profile.customActions:[];state.profile.customPlan=Array.isArray(state.profile.customPlan)?state.profile.customPlan:[];state.profile.includeRevisions=state.profile.includeRevisions!==false;state.profile.includeMistakes=state.profile.includeMistakes!==false;state.profile.includeChapters=state.profile.includeChapters!==false;state.profile.planMode=state.profile.planMode==='manual'?'manual':'adaptive';state.profile.focusChapterId=state.profile.focusChapterId||'';state.profile.sessionConfidence=safeNumber(state.profile.sessionConfidence,1,5,3);return state}
+function validateState(){if(!state||typeof state!=='object')state=fresh();state.chapters=Array.isArray(state.chapters)?state.chapters:[];state.revisions=Array.isArray(state.revisions)?state.revisions:[];state.mistakes=Array.isArray(state.mistakes)?state.mistakes:[];state.tests=Array.isArray(state.tests)?state.tests:[];state.sessions=Array.isArray(state.sessions)?state.sessions:[];state.taskLists=Array.isArray(state.taskLists)?state.taskLists:[];state.completedActions=Array.isArray(state.completedActions)?state.completedActions:[];state.profile=state.profile||fresh().profile;if(!['rain','ocean','wind','cafe','brown','white'].includes(state.profile.sound))state.profile.sound='';state.profile.subjects=Array.isArray(state.profile.subjects)&&state.profile.subjects.length?state.profile.subjects:fresh().profile.subjects;state.profile.dailyGoal=safeNumber(state.profile.dailyGoal,15,600,90);state.profile.focusMinutes=safeNumber(state.profile.focusMinutes,5,120,25);state.profile.actionCount=safeNumber(state.profile.actionCount,1,8,5);state.profile.blockMax=safeNumber(state.profile.blockMax,5,120,45);state.profile.todayContexts=(state.profile.todayContexts&&typeof state.profile.todayContexts==='object')?state.profile.todayContexts:{};state.profile.intentions=(state.profile.intentions&&typeof state.profile.intentions==='object')?state.profile.intentions:{};state.profile.customActions=Array.isArray(state.profile.customActions)?state.profile.customActions:[];state.profile.customPlan=Array.isArray(state.profile.customPlan)?state.profile.customPlan:[];state.profile.includeRevisions=state.profile.includeRevisions!==false;state.profile.includeMistakes=state.profile.includeMistakes!==false;state.profile.includeChapters=state.profile.includeChapters!==false;state.profile.planMode=state.profile.planMode==='manual'?'manual':'adaptive';state.profile.focusChapterId=state.profile.focusChapterId||'';state.profile.sessionConfidence=safeNumber(state.profile.sessionConfidence,1,5,3);return state}
 state=validateState();
 </script>
 <script>
 // StudyFlow: Navigation, stats and the adaptive planning engine glue
-function nav(){let items=['Today','Syllabus','Backlog','Revision','Mistakes','Tests','Focus','Progress'];document.getElementById('nav').innerHTML=items.map(x=>`<button class="${tab===x?'active':''}" onclick="go('${x}')" aria-label="Open ${x}">${x}</button>`).join('');document.getElementById('bottom').innerHTML=items.map(x=>`<button class="${tab===x?'active':''}" onclick="go('${x}')" aria-label="Open ${x}">${x}</button>`).join('');try{document.querySelector('#bottom button.active')?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}catch(e){}}
+function nav(){let items=['Today','Syllabus','Backlog','Tasks','Revision','Mistakes','Tests','Focus','Progress'];document.getElementById('nav').innerHTML=items.map(x=>`<button class="${tab===x?'active':''}" onclick="go('${x}')" aria-label="Open ${x}">${x}</button>`).join('');document.getElementById('bottom').innerHTML=items.map(x=>`<button class="${tab===x?'active':''}" onclick="go('${x}')" aria-label="Open ${x}">${x}</button>`).join('');try{document.querySelector('#bottom button.active')?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}catch(e){}}
 function go(x){if(timer.on&&x!=='Focus'){toast('Focus Lock is active — finish the timer first.');return}tab=x;nav();render()}
-function render(){try{nav();const view={Today:todayView,Syllabus:syllabus,Backlog:backlog,Revision:revision,Mistakes:mistakes,Tests:tests,Focus:focusView,Progress:progress}[tab]||todayView;view();const appEl=document.getElementById('app');if(appEl){appEl.classList.remove('view-enter');void appEl.offsetWidth;appEl.classList.add('view-enter')}}catch(e){console.error('StudyFlow render error:',e);const app=document.getElementById('app');if(app){if(tab==='Today'){app.innerHTML=`<div class="grid"><section class="card hero span12"><div class="eyebrow" style="color:#9fb8ae">STUDYFLOW</div><h2 style="font-size:28px;color:var(--gold)">Your study cockpit</h2><p class="muted">Your saved study data is still here. Open a section below to continue.</p><div class="controls"><button class="btn soft" onclick="go('Focus')">Start focus</button><button class="btn light" onclick="go('Mistakes')">Mistakes</button><button class="btn light" onclick="go('Tests')">Tests</button><button class="btn light" onclick="go('Syllabus')">Syllabus</button></div></section><section class="card span4"><div class="kpi">${state.sessions.length}</div><div class="mini">Focus sessions</div></section><section class="card span4"><div class="kpi">${state.mistakes.length}</div><div class="mini">Mistakes saved</div></section><section class="card span4"><div class="kpi">${state.tests.length}</div><div class="mini">Tests saved</div></section></div>`;}else app.innerHTML=`<section class="card" style="margin-top:14px"><h2>StudyFlow needs a quick refresh</h2><p class="muted">This section hit an error, but your saved data has not been intentionally deleted.</p><div class="controls"><button class="btn" onclick="location.reload()">Refresh</button><button class="btn light" onclick="go('Today')">Home</button></div></section>`;}}}
+function render(){try{nav();const view={Today:todayView,Syllabus:syllabus,Backlog:backlog,Tasks:tasksView,Revision:revision,Mistakes:mistakes,Tests:tests,Focus:focusView,Progress:progress}[tab]||todayView;view();const appEl=document.getElementById('app');if(appEl){appEl.classList.remove('view-enter');void appEl.offsetWidth;appEl.classList.add('view-enter')}}catch(e){console.error('StudyFlow render error:',e);const app=document.getElementById('app');if(app){if(tab==='Today'){app.innerHTML=`<div class="grid"><section class="card hero span12"><div class="eyebrow" style="color:#9fb8ae">STUDYFLOW</div><h2 style="font-size:28px;color:var(--gold)">Your study cockpit</h2><p class="muted">Your saved study data is still here. Open a section below to continue.</p><div class="controls"><button class="btn soft" onclick="go('Focus')">Start focus</button><button class="btn light" onclick="go('Mistakes')">Mistakes</button><button class="btn light" onclick="go('Tests')">Tests</button><button class="btn light" onclick="go('Syllabus')">Syllabus</button></div></section><section class="card span4"><div class="kpi">${state.sessions.length}</div><div class="mini">Focus sessions</div></section><section class="card span4"><div class="kpi">${state.mistakes.length}</div><div class="mini">Mistakes saved</div></section><section class="card span4"><div class="kpi">${state.tests.length}</div><div class="mini">Tests saved</div></section></div>`;}else app.innerHTML=`<section class="card" style="margin-top:14px"><h2>StudyFlow needs a quick refresh</h2><p class="muted">This section hit an error, but your saved data has not been intentionally deleted.</p><div class="controls"><button class="btn" onclick="location.reload()">Refresh</button><button class="btn light" onclick="go('Today')">Home</button></div></section>`;}}}
 function weekData(){let out=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toISOString().slice(0,10),m=state.sessions.filter(x=>x.date===ds).reduce((a,x)=>a+(Number(x.minutes)||0),0);out.push({d:ds,m});}return out}
 function currentStreak(){let streak=0;for(let i=0;i<365;i++){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toISOString().slice(0,10);if(state.sessions.some(x=>x.date===ds&&(Number(x.minutes)||0)>0))streak++;else if(i>0)break;}return streak}
 function subjectStats(){return subjectNames().map(sub=>{let cs=state.chapters.filter(c=>c.subject===sub),avg=cs.length?Math.round(cs.reduce((a,c)=>a+(c.mastery||0),0)/cs.length):0;return {sub,avg,count:cs.length}})}
@@ -420,6 +440,79 @@ function readiness(list){if(!list.length)return 0;let od=overdueSet(),m=list.red
 function readyLabel(n){return n>=75?'On track':n>=50?'Building':'Needs focus'}
 function readinessCard(){let all=readiness(state.chapters),d=examDaysLeft(),subs=subjectNames().map(s=>{let l=state.chapters.filter(c=>c.subject===s);return {s,n:l.length,r:readiness(l)}}).filter(x=>x.n);let left=state.chapters.filter(c=>(c.mastery||0)<80).length,cd=d===null?'<div class="mini">Set an exam date in Settings to see your countdown.</div>':d<0?'<div class="mini">Exam date has passed. Update it in Settings.</div>':d===0?'<div class="kpi">Exam today</div>':`<div class="kpi">${d} <span class="mini">days to exam</span></div><div class="mini">Pace needed: ${(left/Math.max(1,d)).toFixed(1)} chapters/day to reach 80% mastery on all ${left} remaining</div>`;return `<section class="card"><div class="eyebrow">EXAM READINESS</div>${cd}<div class="kpi" style="margin-top:12px">${all}<span class="mini">/100 · ${readyLabel(all)}</span></div><div class="bar"><div class="fill" style="width:${all}%"></div></div><div style="margin-top:12px">${subs.map(x=>`<div class="metric"><span>${esc(x.s)}</span><b>${x.r}/100</b></div>`).join('')}</div></section>`}
 function printReport(){let el=document.getElementById('printReport');if(!el){el=document.createElement('div');el.id='printReport';document.body.appendChild(el)}let all=readiness(state.chapters),d=examDaysLeft(),st=stats(),days=[];for(let i=6;i>=0;i--){let dt=new Date();dt.setDate(dt.getDate()-i);let k=dt.toISOString().slice(0,10);days.push({k,m:state.sessions.filter(x=>x.date===k).reduce((a,x)=>a+(Number(x.minutes)||0),0)})}let tot=days.reduce((a,x)=>a+x.m,0),rows=subjectNames().map(s=>{let l=state.chapters.filter(c=>c.subject===s);return l.length?`<h3>${esc(s)} <span style="font-weight:400">· readiness ${readiness(l)}/100</span></h3><table>${l.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.status)}</td><td>${c.mastery||0}%</td></tr>`).join('')}</table>`:''}).join('');el.innerHTML=`<h1>StudyFlow progress report</h1><p>${esc(state.profile.name||'Student')} · ${new Date().toLocaleDateString()}${state.profile.exam?' · '+esc(state.profile.exam):''}</p><p><b>Overall readiness: ${all}/100 (${readyLabel(all)})</b>${d!==null&&d>=0?' · '+d+' days to exam':''}</p><p>Average mastery ${st.avg}% · ${currentStreak()} day streak · ${tot} focus minutes this week · ${backlogItems().length} chapters in backlog · ${state.mistakes.length} mistakes logged</p>${rows}`;window.print()}
+</script>
+<script>
+// StudyFlow: Built-in task lists (multiple lists, due dates, link a task to a focus session)
+function ensureTaskLists(){
+  if(!Array.isArray(state.taskLists))state.taskLists=[];
+  if(!state.taskLists.length)state.taskLists.push({id:'inbox',name:'Inbox',tasks:[]});
+  if(!state.taskLists.some(l=>l.id===state.profile.activeTaskList))state.profile.activeTaskList=state.taskLists[0].id;
+  return state.taskLists;
+}
+function activeTaskList(){ensureTaskLists();return state.taskLists.find(l=>l.id===state.profile.activeTaskList)||state.taskLists[0]}
+function findTask(id){for(const l of ensureTaskLists()){const t=l.tasks.find(x=>x.id===id);if(t)return {list:l,task:t}}return null}
+function taskTitle(){const f=state.profile.focusTaskId?findTask(state.profile.focusTaskId):null;return f?f.task.text:''}
+function sortedTasks(list){
+  const open=list.tasks.filter(t=>!t.done).sort((a,b)=>(a.due||'9999-99-99')<(b.due||'9999-99-99')?-1:(a.due||'9999-99-99')>(b.due||'9999-99-99')?1:(a.created||'')<(b.created||'')?-1:1);
+  return {open,done:list.tasks.filter(t=>t.done)};
+}
+function taskRow(t){
+  const late=!t.done&&t.due&&t.due<today(),today_=!t.done&&t.due===today();
+  return `<div class="task-line ${t.done?'task-complete':''}"><button class="task-check ${t.done?'done':''}" onclick="toggleTask('${t.id}')" aria-label="${t.done?'Mark not done':'Mark done'}">${t.done?'✓':''}</button><div class="task-copy"><b>${esc(t.text)}</b>${t.due?`<div class="mini" style="${late?'color:#b65d4b':''}">${late?'Overdue · ':today_?'Today · ':'Due '}${esc(t.due)}</div>`:''}</div>${t.done?'':`<button class="btn light task-mini" onclick="focusTask('${t.id}')">Focus</button>`}<button class="task-del" onclick="deleteTask('${t.id}')" aria-label="Delete task">×</button></div>`;
+}
+function tasksView(){
+  ensureTaskLists();
+  const list=activeTaskList(),{open,done}=sortedTasks(list),total=list.tasks.length,pct=total?Math.round(done.length/total*100):0;
+  document.getElementById('app').innerHTML=`<div class="row"><div><h2>Tasks</h2><div class="muted">${open.length?open.length+' to do':'Nothing pending'} in ${esc(list.name)}.</div></div><div class="controls"><button class="btn light" onclick="addTaskList()">+ New list</button></div></div>
+<div class="task-lists" role="tablist">${state.taskLists.map(l=>`<button class="focus-preset ${l.id===list.id?'active':''}" onclick="selectTaskList('${l.id}')">${esc(l.name)} <span class="mini">${l.tasks.filter(t=>!t.done).length}</span></button>`).join('')}</div>
+<section class="card" style="margin-top:12px"><div class="task-add"><input class="input" id="taskNew" placeholder="Add a task and press Enter" maxlength="140" onkeydown="if(event.key==='Enter')addTask()"><input class="input" id="taskDue" type="date" aria-label="Due date"><button class="btn" onclick="addTask()">Add</button></div>
+${total?`<div class="bar" style="margin-top:12px"><div class="fill" style="width:${pct}%"></div></div><div class="mini" style="margin-top:6px">${done.length} of ${total} done</div>`:''}
+<div style="margin-top:8px">${open.map(taskRow).join('')||`<div class="empty">${total?'All done. Nice work.':'No tasks yet. Add your first one above.'}</div>`}</div>
+${done.length?`<div class="eyebrow" style="margin-top:14px">COMPLETED</div>${done.map(taskRow).join('')}<div class="controls" style="margin-top:10px"><button class="btn light" onclick="clearDoneTasks()">Clear completed</button></div>`:''}
+<div class="controls" style="margin-top:14px"><button class="btn light" onclick="renameTaskList()">Rename list</button>${state.taskLists.length>1?'<button class="btn warn" onclick="deleteTaskList()">Delete list</button>':''}</div></section>`;
+}
+function addTask(){
+  const el=document.getElementById('taskNew'),text=(el?.value||'').trim();
+  if(!text){toast('Type a task first.');return}
+  activeTaskList().tasks.push({id:uid(),text:text.slice(0,140),done:false,due:document.getElementById('taskDue')?.value||'',created:new Date().toISOString()});
+  save();tasksView();document.getElementById('taskNew')?.focus();
+}
+function toggleTask(id){
+  const f=findTask(id);if(!f)return;
+  f.task.done=!f.task.done;f.task.doneAt=f.task.done?today():'';
+  if(f.task.done&&state.profile.focusTaskId===id)state.profile.focusTaskId='';
+  save();tasksView();
+}
+function deleteTask(id){
+  const f=findTask(id);if(!f)return;
+  f.list.tasks=f.list.tasks.filter(t=>t.id!==id);
+  if(state.profile.focusTaskId===id)state.profile.focusTaskId='';
+  save();tasksView();
+}
+function clearDoneTasks(){const l=activeTaskList(),n=l.tasks.filter(t=>t.done).length;if(!n)return;l.tasks=l.tasks.filter(t=>!t.done);save();toast(n+' completed task'+(n>1?'s':'')+' cleared.');tasksView()}
+function selectTaskList(id){state.profile.activeTaskList=id;save();tasksView()}
+function addTaskList(){
+  const name=(prompt('Name your new list:')||'').trim().slice(0,40);
+  if(!name)return;
+  const l={id:uid(),name,tasks:[]};state.taskLists.push(l);state.profile.activeTaskList=l.id;save();tasksView();
+}
+function renameTaskList(){
+  const l=activeTaskList(),name=(prompt('Rename list:',l.name)||'').trim().slice(0,40);
+  if(!name)return;l.name=name;save();tasksView();
+}
+function deleteTaskList(){
+  const l=activeTaskList();
+  if(state.taskLists.length<2||!confirm('Delete "'+l.name+'" and its '+l.tasks.length+' task(s)?'))return;
+  if(l.tasks.some(t=>t.id===state.profile.focusTaskId))state.profile.focusTaskId='';
+  state.taskLists=state.taskLists.filter(x=>x.id!==l.id);state.profile.activeTaskList=state.taskLists[0].id;save();tasksView();
+}
+function focusTask(id){if(timer.on||!findTask(id))return;state.profile.focusTaskId=id;save();go('Focus')}
+function clearFocusTask(){if(timer.on)return;state.profile.focusTaskId='';save();focusView()}
+function completeFocusTask(){const id=state.profile.focusTaskId;if(!id||!findTask(id))return;toggleTask(id);focusView();toast('Task marked done.')}
+
+function taskChip(f){
+  return f?`<div class="target-strip"><b>${esc(f.task.text)}</b><span>Task · ${esc(f.list.name)}</span><span class="task-chip-actions"><button class="btn soft task-mini" onclick="completeFocusTask()" ${timer.on?'disabled':''}>Mark done</button> <button class="btn light task-mini" onclick="clearFocusTask()" ${timer.on?'disabled':''}>Clear</button></span></div>`:'';
+}
 </script>
 <script>
 // StudyFlow: Toast, end-of-day review and weekly insight
@@ -550,7 +643,7 @@ function chapterOptions(selectedId){
   });
   return Object.keys(grouped).sort().map(subject=>`<optgroup label="${esc(subject)}">${grouped[subject].sort((a,b)=>String(a.name).localeCompare(String(b.name))).map(c=>`<option value="${esc(c.id)}" ${c.id===selectedId?'selected':''}>${esc(c.name)} · ${Number(c.mastery)||0}%</option>`).join('')}</optgroup>`).join('');
 }
-function focusView(){let mins=state.sessions.filter(x=>x.date===today()).reduce((a,x)=>a+x.minutes,0),target=state.profile.dailyGoal||90,cur=state.profile.focusMinutes||25,chapter=state.chapters.find(c=>c.id===state.profile.focusChapterId),conf=state.profile.sessionConfidence||3;document.getElementById('app').innerHTML=`<div class="grid"><section class="card span7"><div class="eyebrow">FOCUS STUDIO</div><div class="row"><div><h2>One task. Full attention.</h2><div class="muted">Give the session a target so your study history becomes more useful.</div></div><span class="tag ${timer.on?'good':''}">${timer.on?'Locked & running':'Ready'}</span></div><div class="ring"><b id="timer">${fmt(timer.sec)}</b></div><div class="focus-book-panel" id="focusBookPanel"><div class="eyebrow">YOUR STUDY BOOK</div><div class="focus-book-stage"><div class="focus-forming-book" id="focusFormingBook"><div class="focus-pages" id="focusBookPages"></div><div class="focus-page-stack" id="focusPageStack"></div><div class="focus-book-title" id="focusBookTitle">${esc(chapter?.name||'Focus Session')}</div><div class="focus-forming-cover"></div></div></div><div class="focus-book-status" id="focusBookStatus">${timer.on?'Your book is forming…':'Start focus to begin a new book'}</div><div class="focus-book-progress" id="focusBookProgress">${timer.on?'0 pages added so far':'Pages will be added as you study'}</div></div><div class="focus-presets">${[15,25,45,60,90].map(n=>`<button class="focus-preset ${cur===n?'active':''}" onclick="setFocusLength(${n})" ${timer.on?'disabled':''}>${n} min</button>`).join('')}</div><div class="focus-custom"><input class="input" id="focusCustom" type="number" min="5" max="120" value="${cur}" ${timer.on?'disabled':''}><button class="btn soft" onclick="applyFocusCustom()" ${timer.on?'disabled':''}>Set time</button></div><div class="focus-panel"><label><span>Focus target</span><select class="input" id="focusChapter" onchange="setFocusTarget(this.value)" ${timer.on?'disabled':''}><option value="">General study</option>${chapterOptions(state.profile.focusChapterId)}</select></label><label><span>Confidence after session</span><select class="input" id="sessionConf" onchange="setSessionConfidence(this.value)">${[1,2,3,4,5].map(n=>`<option value="${n}" ${conf===n?'selected':''}>${n} / 5</option>`).join('')}</select></label></div><div class="target-strip">${chapter?`<b>${esc(chapter.name)}</b><span>${esc(chapter.subject)} · ${chapter.mastery}% mastery</span>`:'<b>General study session</b><span>Choose a chapter above to link this focus block to your syllabus.</span>'}</div><div class="controls" style="justify-content:center;margin-top:14px"><button class="btn" onclick="toggleTimer()">${timer.on?'Focus locked':'Start focus'}</button><button class="btn light" onclick="resetTimer()" ${timer.on?'disabled':''}>Reset</button><button class="btn soft" onclick="logSession()" ${timer.on?'disabled':''}>Log ${cur} min</button></div><p class="mini" style="text-align:center;margin-top:12px">Starting focus activates Focus Lock. Your study time becomes a book in your Study Library when the session is completed.</p></section><section class="card span5"><div class="eyebrow">TODAY</div><h3>Progress to goal</h3><div class="kpi">${mins} <span class="mini">/ ${target} min</span></div><div class="bar"><div class="fill" style="width:${Math.min(100,pct(mins,target))}%"></div></div><div class="mini" style="margin-top:9px">${Math.max(0,target-mins)} minutes remaining.</div><div class="item" style="margin-top:14px"><div class="metric"><span>Current streak</span><b>${currentStreak()} day${currentStreak()===1?'':'s'}</b></div><div class="metric"><span>Sessions today</span><b>${state.sessions.filter(x=>x.date===today()&&x.minutes>0).length}</b></div><div class="metric"><span>Next planned block</span><b>${dailyPlan()[0]?.mins||0}m</b></div></div><h3 style="margin-top:18px">Suggested next block</h3><div class="item"><b>${esc(dailyPlan()[0]?.label||'No plan yet')}</b><div class="mini">${dailyPlan()[0]?.mins||0} minutes · ${esc(dailyPlan()[0]?.reason||'Add a chapter or test to generate a plan.')}</div><button class="btn soft small" style="margin-top:8px" onclick="startPlanBlock(0)">Use this block</button></div></section><section class="card span12 focus-library"><div class="row"><div><div class="eyebrow">STUDY LIBRARY</div><h2>Your study shelf</h2><div class="muted">Every completed focus session becomes a book. Books are arranged from shorter to longer study sessions, with longer sessions creating thicker books.</div></div><span class="tag good">${libraryMinutes()} min studied</span></div>${renderLibrary()}<div class="library-meta"><span>${state.sessions.filter(x=>(Number(x.minutes)||0)>0).length} book${state.sessions.filter(x=>(Number(x.minutes)||0)>0).length===1?'':'s'} collected</span><span>Ordered by study time</span></div></section></div>`}
+function focusView(){const cfg=timerCfg(),mode=cfg.mode,task=state.profile.focusTaskId?findTask(state.profile.focusTaskId):null;let mins=state.sessions.filter(x=>x.date===today()).reduce((a,x)=>a+x.minutes,0),target=state.profile.dailyGoal||90,cur=state.profile.focusMinutes||25,chapter=state.chapters.find(c=>c.id===state.profile.focusChapterId),conf=state.profile.sessionConfidence||3;document.getElementById('app').innerHTML=`<div class="grid"><section class="card span7"><div class="eyebrow">FOCUS STUDIO</div><div class="row"><div><h2>One task. Full attention.</h2><div class="muted">Give the session a target so your study history becomes more useful.</div></div><span class="tag ${timer.on?'good':''}">${timer.on?'Locked & running':'Ready'}</span></div><div class="ring"><b id="timer">${fmt(timer.sec)}</b></div><div class="focus-book-panel" id="focusBookPanel"><div class="eyebrow">YOUR STUDY BOOK</div><div class="focus-book-stage"><div class="focus-forming-book" id="focusFormingBook"><div class="focus-pages" id="focusBookPages"></div><div class="focus-page-stack" id="focusPageStack"></div><div class="focus-book-title" id="focusBookTitle">${esc(chapter?.name||'Focus Session')}</div><div class="focus-forming-cover"></div></div></div><div class="focus-book-status" id="focusBookStatus">${timer.on?'Your book is forming…':'Start focus to begin a new book'}</div><div class="focus-book-progress" id="focusBookProgress">${timer.on?'0 pages added so far':'Pages will be added as you study'}</div></div><div class="focus-presets" style="margin-bottom:8px">${[['countdown','Countdown'],['pomodoro','Pomodoro'],['stopwatch','Stopwatch']].map(([k,l])=>`<button class="focus-preset ${mode===k?'active':''}" onclick="setTimerMode('${k}')" ${timer.on?'disabled':''}>${l}</button>`).join('')}</div>${mode==='stopwatch'?'<p class="mini" style="text-align:center;margin:0 0 8px">Counts up. Finish whenever you are done; the book grows toward the length below.</p>':''}<div class="focus-presets">${[15,25,45,60,90].map(n=>`<button class="focus-preset ${cur===n?'active':''}" onclick="setFocusLength(${n})" ${timer.on?'disabled':''}>${n} min</button>`).join('')}</div><div class="focus-custom"><input class="input" id="focusCustom" type="number" min="5" max="120" value="${cur}" ${timer.on?'disabled':''}><button class="btn soft" onclick="applyFocusCustom()" ${timer.on?'disabled':''}>Set time</button></div>${mode==='pomodoro'?pomodoroPanel(cfg):''}<div class="focus-panel"><label><span>Focus target</span><select class="input" id="focusChapter" onchange="setFocusTarget(this.value)" ${timer.on?'disabled':''}><option value="">General study</option>${chapterOptions(state.profile.focusChapterId)}</select></label><label><span>Confidence after session</span><select class="input" id="sessionConf" onchange="setSessionConfidence(this.value)">${[1,2,3,4,5].map(n=>`<option value="${n}" ${conf===n?'selected':''}>${n} / 5</option>`).join('')}</select></label></div>${soundPanel()}<div class="target-strip">${chapter?`<b>${esc(chapter.name)}</b><span>${esc(chapter.subject)} · ${chapter.mastery}% mastery</span>`:'<b>General study session</b><span>Choose a chapter above to link this focus block to your syllabus.</span>'}</div>${taskChip(task)}<div class="controls" style="justify-content:center;margin-top:14px"><button class="btn" onclick="toggleTimer()">${timer.on?'Focus locked':mode==='stopwatch'?'Start stopwatch':mode==='pomodoro'?'Start Pomodoro':'Start focus'}</button><button class="btn light" onclick="resetTimer()" ${timer.on?'disabled':''}>Reset</button><button class="btn soft" onclick="logSession()" ${timer.on?'disabled':''}>Log ${cur} min</button></div><p class="mini" style="text-align:center;margin-top:12px">Starting focus activates Focus Lock. Your study time becomes a book in your Study Library when the session is completed.</p></section><section class="card span5"><div class="eyebrow">TODAY</div><h3>Progress to goal</h3><div class="kpi">${mins} <span class="mini">/ ${target} min</span></div><div class="bar"><div class="fill" style="width:${Math.min(100,pct(mins,target))}%"></div></div><div class="mini" style="margin-top:9px">${Math.max(0,target-mins)} minutes remaining.</div><div class="item" style="margin-top:14px"><div class="metric"><span>Current streak</span><b>${currentStreak()} day${currentStreak()===1?'':'s'}</b></div><div class="metric"><span>Sessions today</span><b>${state.sessions.filter(x=>x.date===today()&&x.minutes>0).length}</b></div><div class="metric"><span>Next planned block</span><b>${dailyPlan()[0]?.mins||0}m</b></div></div><h3 style="margin-top:18px">Suggested next block</h3><div class="item"><b>${esc(dailyPlan()[0]?.label||'No plan yet')}</b><div class="mini">${dailyPlan()[0]?.mins||0} minutes · ${esc(dailyPlan()[0]?.reason||'Add a chapter or test to generate a plan.')}</div><button class="btn soft small" style="margin-top:8px" onclick="startPlanBlock(0)">Use this block</button></div></section><section class="card span12 focus-library"><div class="row"><div><div class="eyebrow">STUDY LIBRARY</div><h2>Your study shelf</h2><div class="muted">Every completed focus session becomes a book. Books are arranged from shorter to longer study sessions, with longer sessions creating thicker books.</div></div><span class="tag good">${libraryMinutes()} min studied</span></div>${renderLibrary()}<div class="library-meta"><span>${state.sessions.filter(x=>(Number(x.minutes)||0)>0).length} book${state.sessions.filter(x=>(Number(x.minutes)||0)>0).length===1?'':'s'} collected</span><span>Ordered by study time</span></div></section></div>`}
 function libraryMinutes(){return (state.sessions||[]).reduce((a,x)=>a+(Number(x.minutes)||0),0)}
 function libraryColor(i){const colors=['#dcece5','#e4efe9','#f1eadb','#d8e8df','#ece6d9','#cfe2d9'];return colors[i%colors.length]}
 function renderLibrary(){
@@ -563,23 +656,298 @@ function renderLibrary(){
 }
 function setFocusTarget(id){if(timer.on)return;state.profile.focusChapterId=id||'';save();focusView()}
 function setSessionConfidence(v){state.profile.sessionConfidence=Math.max(1,Math.min(5,Number(v)||3));save()}
-function startPlanBlock(index){if(timer.on)return;let plans=dailyPlan(),p=plans[index]||plans[0];if(!p)return;state.profile.focusMinutes=Math.max(5,Math.min(120,Number(p.mins)||25));state.profile.focusChapterId=p.chapterId||'';timer={on:false,sec:state.profile.focusMinutes*60};save();go('Focus')}
-function setFocusLength(n){if(timer.on)return;state.profile.focusMinutes=n;timer={on:false,sec:n*60};save();focusView()}
+function startPlanBlock(index){if(timer.on)return;let plans=dailyPlan(),p=plans[index]||plans[0];if(!p)return;state.profile.focusMinutes=Math.max(5,Math.min(120,Number(p.mins)||25));state.profile.focusChapterId=p.chapterId||'';timer=idleTimer();save();go('Focus')}
+function setFocusLength(n){if(timer.on)return;state.profile.focusMinutes=n;timer=idleTimer();save();focusView()}
 function applyFocusCustom(){if(timer.on)return;let n=Math.max(5,Math.min(120,Number(document.getElementById('focusCustom').value)||25));setFocusLength(n)}
 function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 async function requestWakeLock(){if(!('wakeLock' in navigator)||wakeLock)return;try{wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null},{once:true})}catch(e){wakeLock=null}}
 async function releaseWakeLock(){if(wakeLock){try{await wakeLock.release()}catch(e){}wakeLock=null}}
 function updateFocusLockClock(){syncFocusLock()}
-function syncFocusLock(){const el=document.getElementById('focusLockTimer');if(el)el.textContent=fmt(timer.sec);const ch=document.getElementById('focusLockChapter');if(ch){const c=state.chapters.find(x=>x.id===state.profile.focusChapterId);ch.innerHTML=c?`<b>${esc(c.name)}</b><div class="mini" style="margin-top:4px">${esc(c.subject)} · ${c.mastery}% mastery</div>`:'<b>General study session</b><div class="mini" style="margin-top:4px">Stay with the current task.</div>'}updateFocusBook()}
-function updateFocusBook(){const total=Math.max(1,(Number(state.profile.focusMinutes)||25)*60);const remaining=Math.max(0,Number(timer.sec)||0);const elapsed=Math.max(0,total-remaining);const progress=timer.on?Math.min(1,elapsed/total):0;const pages=Math.min(48,Math.floor(progress*48));const c=state.chapters.find(x=>x.id===state.profile.focusChapterId);const title=c?.name||'Focus Session';const update=(bookId,stackId,progressId,statusId,titleId,lock=false)=>{const book=document.getElementById(bookId);if(!book)return;book.style.setProperty(lock?'--lock-forming-w':'--forming-w',(lock?62:62)+Math.round(progress*(lock?60:72))+'px');book.style.setProperty(lock?'--lock-pages-w':'--pages-w',(3+Math.round(progress*10))+'px');book.classList.toggle('growing',timer.on&&progress<1);book.classList.toggle('complete',timer.on&&progress>=1);const stack=document.getElementById(stackId);if(stack&&stack.children){for(let i=stack.children.length;i<pages;i++){const page=document.createElement('div');page.className=lock?'focus-lock-page':'focus-page';page.style.bottom=(4+i*2)+'px';stack.appendChild(page)}}const progressEl=document.getElementById(progressId);if(progressEl)progressEl.textContent=timer.on?`${pages} page${pages===1?'':'s'} added · ${Math.round(progress*100)}% formed`:'Pages will be added as you study';const status=document.getElementById(statusId);if(status)status.textContent=timer.on?(progress>=1?'Your book is complete!':'Your book is forming…'):'Start focus to begin a new book';const titleEl=document.getElementById(titleId);if(titleEl)titleEl.textContent=title};update('focusFormingBook','focusPageStack','focusBookProgress','focusBookStatus','focusBookTitle');update('focusLockBook','focusLockPageStack','focusLockBookProgress','focusLockBookStatus','focusLockBookTitle',true)}
+function updateFocusBook(){const progress=bookProgress();const pages=Math.min(48,Math.floor(progress*48));const c=state.chapters.find(x=>x.id===state.profile.focusChapterId);const title=c?.name||taskTitle()||'Focus Session';const update=(bookId,stackId,progressId,statusId,titleId,lock=false)=>{const book=document.getElementById(bookId);if(!book)return;book.style.setProperty(lock?'--lock-forming-w':'--forming-w',(lock?62:62)+Math.round(progress*(lock?60:72))+'px');book.style.setProperty(lock?'--lock-pages-w':'--pages-w',(3+Math.round(progress*10))+'px');book.classList.toggle('growing',timer.on&&progress<1);book.classList.toggle('complete',timer.on&&progress>=1);const stack=document.getElementById(stackId);if(stack&&stack.children){for(let i=stack.children.length;i<pages;i++){const page=document.createElement('div');page.className=lock?'focus-lock-page':'focus-page';page.style.bottom=(4+i*2)+'px';stack.appendChild(page)}}const progressEl=document.getElementById(progressId);if(progressEl)progressEl.textContent=timer.on?`${pages} page${pages===1?'':'s'} added · ${Math.round(progress*100)}% formed`:'Pages will be added as you study';const status=document.getElementById(statusId);if(status)status.textContent=timer.on?(progress>=1?'Your book is complete!':'Your book is forming…'):'Start focus to begin a new book';const titleEl=document.getElementById(titleId);if(titleEl)titleEl.textContent=title};update('focusFormingBook','focusPageStack','focusBookProgress','focusBookStatus','focusBookTitle');update('focusLockBook','focusLockPageStack','focusLockBookProgress','focusLockBookStatus','focusLockBookTitle',true)}
 
 async function enterFocusLock(){const lock=document.getElementById('focusLock');if(lock){lock.classList.add('open');lock.setAttribute('aria-hidden','false');syncFocusLock()}document.body.style.overflow='hidden';requestWakeLock();try{if(document.documentElement.requestFullscreen&&!document.fullscreenElement)await document.documentElement.requestFullscreen()}catch(e){}}
 async function exitFocusLock(){const lock=document.getElementById('focusLock');if(lock){lock.classList.remove('open');lock.setAttribute('aria-hidden','true')}document.body.style.overflow='';releaseWakeLock();try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch(e){}}
-function toggleTimer(){if(timer.on)return;timer.on=true;enterFocusLock();clearInterval(interval);interval=setInterval(()=>{if(timer.sec>0){timer.sec--;syncFocusLock();let e=document.getElementById('timer');if(e)e.textContent=fmt(timer.sec)}else{clearInterval(interval);interval=null;document.getElementById('focusLockBook')?.classList.add('complete');const status=document.getElementById('focusLockBookStatus');if(status)status.textContent='Your book is complete!';setTimeout(()=>{timer.on=false;logSession(true);exitFocusLock();toast('Focus session complete. A new book was added to your library.');focusView()},1100)}},1000);focusView()}
-function resetTimer(){if(timer.on)return;clearInterval(interval);timer={on:false,sec:(state.profile.focusMinutes||25)*60};focusView()}
-function logSession(autoComplete=false){if(timer.on&&!autoComplete)return;let mins=Math.max(1,Math.round(Number(state.profile.focusMinutes)||25));let chapterId=state.profile.focusChapterId||'';let confidence=Math.max(1,Math.min(5,Number(state.profile.sessionConfidence)||3));state.sessions.push({id:uid(),date:today(),minutes:mins,chapterId,confidence,completedAt:new Date().toISOString()});if(chapterId){let c=state.chapters.find(x=>x.id===chapterId);if(c){c.lastStudied=today();c.confidence=confidence;c.mastery=Math.min(100,Math.round((Number(c.mastery)||0)+Math.max(1,Math.min(5,Math.round(mins/20)))));c.status=c.mastery>=80?'Strong':c.mastery>0?'Learning':'Not started'}}save();if(!autoComplete)resetTimer();else{timer={on:false,sec:(state.profile.focusMinutes||25)*60};focusView()}}
 function quickRecall(id){let c=state.chapters.find(x=>x.id===id);if(!c)return;let prompts=[`Define the central idea of ${c.name} in one sentence.`,`Write the 3 formulas/rules you most need from ${c.name}.`,`Name one common mistake in ${c.name} and how you prevent it.`];openSheet(`<div class="eyebrow">30-second recall</div><h2>${esc(c.name)}</h2><p class="quote">${esc(prompts[Math.floor(Math.random()*prompts.length)])}</p><textarea class="input" id="recall" rows="5" placeholder="Answer from memory — no notes."></textarea><div class="controls" style="margin-top:10px"><button class="btn" onclick="completeRecall('${c.id}')">I recalled it</button><button class="btn light" onclick="closeModal()">Exit</button></div>`)}
 function completeRecall(id){let c=state.chapters.find(x=>x.id===id);if(c){c.lastStudied=today();c.confidence=Math.min(5,(c.confidence||0)+1);c.mastery=Math.min(100,(c.mastery||0)+2);scheduleFor(id,true);save()}closeModal();render()}
+</script>
+<script>
+// StudyFlow: Flexible focus timer (countdown, Pomodoro with breaks, stopwatch), pause, extend and finish early
+// The clock is derived from timestamps, not from counting ticks, so it stays correct when the tab is throttled.
+function timerCfg(){
+  const p=state.profile,num=(v,d,lo,hi)=>Math.max(lo,Math.min(hi,Number(v)||d));
+  return {
+    mode:['countdown','pomodoro','stopwatch'].includes(p.timerMode)?p.timerMode:'countdown',
+    focus:num(p.focusMinutes,25,1,240),brk:num(p.breakMinutes,5,1,60),longBrk:num(p.longBreakMinutes,15,1,90),
+    every:num(p.cyclesBeforeLong,4,2,10),auto:!!p.autoNext
+  };
+}
+function idleTimer(completed=0){
+  const c=timerCfg(),stop=c.mode==='stopwatch';
+  return {on:false,paused:false,mode:c.mode,phase:'focus',total:stop?0:c.focus*60,sec:stop?0:c.focus*60,startedAt:0,endAt:0,pausedAt:0,completed};
+}
+timer=idleTimer();
+function elapsedSeconds(){
+  if(timer.phase!=='focus')return 0;
+  return timer.mode==='stopwatch'?timer.sec:Math.max(0,timer.total-timer.sec);
+}
+function startPhase(phase){
+  const c=timerCfg(),now=Date.now(),carry=timer.completed||0;
+  timer.mode=c.mode;timer.phase=phase;timer.on=true;timer.paused=false;timer.pausedAt=0;timer.completed=carry;timer.startedAt=now;
+  if(phase==='focus'){
+    ['focusLockPageStack','focusPageStack'].forEach(id=>{const s=document.getElementById(id);if(s)s.innerHTML=''});
+    if(c.mode==='stopwatch'){timer.total=0;timer.sec=0;timer.endAt=0}
+    else{timer.total=c.focus*60;timer.sec=timer.total;timer.endAt=now+timer.total*1000}
+  }else{
+    timer.total=(phase==='long'?c.longBrk:c.brk)*60;timer.sec=timer.total;timer.endAt=now+timer.total*1000;
+  }
+  if(!document.getElementById('focusLock')?.classList.contains('open'))enterFocusLock();
+  if(phase==='focus')startSound();else stopSound();
+  clearInterval(interval);interval=setInterval(tickTimer,500);
+  syncFocusLock();focusView();
+}
+function toggleTimer(){if(timer.on)return;startPhase('focus')}
+function resetTimer(){if(timer.on)return;clearInterval(interval);interval=null;timer=idleTimer();focusView()}
+function tickTimer(){
+  if(!timer.on||timer.paused)return;
+  if(timer.mode==='stopwatch'&&timer.phase==='focus'){
+    timer.sec=Math.max(0,Math.floor((Date.now()-timer.startedAt)/1000));
+  }else{
+    timer.sec=Math.max(0,Math.ceil((timer.endAt-Date.now())/1000));
+    if(timer.sec<=0){phaseDone();return}
+  }
+  syncFocusLock();
+  const e=document.getElementById('timer');if(e)e.textContent=fmt(timer.sec);
+}
+function togglePause(){
+  if(!timer.on)return;
+  if(!timer.paused){
+    tickTimer();timer.paused=true;timer.pausedAt=Date.now();pauseSound();
+  }else{
+    const gap=Date.now()-timer.pausedAt;timer.startedAt+=gap;if(timer.endAt)timer.endAt+=gap;timer.paused=false;timer.pausedAt=0;
+    if(timer.phase==='focus')resumeSound();
+  }
+  syncFocusLock();
+}
+function extendTimer(min=5){
+  if(!timer.on||timer.phase!=='focus'||timer.mode==='stopwatch')return;
+  if(timer.total+min*60>240*60){toast('Sessions are capped at 4 hours.');return}
+  timer.total+=min*60;timer.endAt+=min*60000;tickTimer();syncFocusLock();toast('Added '+min+' minutes.');
+}
+function phaseDone(){
+  clearInterval(interval);interval=null;
+  if(timer.phase==='focus'){
+    document.getElementById('focusLockBook')?.classList.add('complete');
+    const status=document.getElementById('focusLockBookStatus');if(status)status.textContent='Your book is complete!';
+    const mins=Math.round(timer.total/60);
+    setTimeout(()=>finishFocus(mins,false),1100);
+  }else breakDone(false);
+}
+function finishFocus(mins,early){
+  const pomodoro=timer.mode==='pomodoro';
+  recordSession(mins);
+  const done=(timer.completed||0)+1;
+  stopSound();
+  if(pomodoro&&!early){
+    const c=timerCfg();timer.completed=done;
+    toast('Session logged. Time for a '+(done%c.every===0?'long ':'')+'break.');
+    startPhase(done%c.every===0?'long':'short');
+  }else{
+    endTimerSession(early?'Logged '+mins+' min. A new book was added to your library.':'Focus session complete. A new book was added to your library.');
+  }
+}
+function breakDone(skipped){
+  const c=timerCfg();
+  if(c.auto){toast(skipped?'Break skipped. Next session started.':'Break over. Next session started.');startPhase('focus')}
+  else endTimerSession(skipped?'Break skipped. Ready when you are.':'Break over. Ready for the next session.');
+}
+function endTimerSession(message){
+  clearInterval(interval);interval=null;
+  const carry=timerCfg().mode==='pomodoro'?timer.completed||0:0;
+  timer=idleTimer(carry);
+  exitFocusLock();stopSound();
+  if(message)toast(message);
+  focusView();
+}
+function finishTimerEarly(){
+  if(!timer.on)return;
+  if(timer.phase!=='focus'){clearInterval(interval);breakDone(true);return}
+  tickTimer();
+  const mins=Math.floor(elapsedSeconds()/60);
+  if(mins<1){
+    if(!confirm('Less than a minute has passed. Discard this session?'))return;
+    endTimerSession('Session discarded.');return;
+  }
+  clearInterval(interval);interval=null;
+  finishFocus(mins,true);
+}
+function setTimerMode(mode){
+  if(timer.on)return;
+  state.profile.timerMode=['countdown','pomodoro','stopwatch'].includes(mode)?mode:'countdown';
+  save();timer=idleTimer();focusView();
+}
+function savePomodoro(){
+  const g=id=>Number(document.getElementById(id)?.value);
+  state.profile.breakMinutes=Math.max(1,Math.min(60,g('pomBreak')||5));
+  state.profile.longBreakMinutes=Math.max(1,Math.min(90,g('pomLong')||15));
+  state.profile.cyclesBeforeLong=Math.max(2,Math.min(10,g('pomEvery')||4));
+  state.profile.autoNext=!!document.getElementById('pomAuto')?.checked;
+  save();toast('Pomodoro settings saved');focusView();
+}
+function recordSession(mins){
+  mins=Math.max(1,Math.round(Number(mins)||25));
+  const chapterId=state.profile.focusChapterId||'',confidence=Math.max(1,Math.min(5,Number(state.profile.sessionConfidence)||3));
+  state.sessions.push({id:uid(),date:today(),minutes:mins,chapterId,confidence,mode:timer.mode||'countdown',taskId:state.profile.focusTaskId||'',completedAt:new Date().toISOString()});
+  if(chapterId){
+    const c=state.chapters.find(x=>x.id===chapterId);
+    if(c){c.lastStudied=today();c.confidence=confidence;c.mastery=Math.min(100,Math.round((Number(c.mastery)||0)+Math.max(1,Math.min(5,Math.round(mins/20)))));c.status=c.mastery>=80?'Strong':c.mastery>0?'Learning':'Not started'}
+  }
+  save();
+}
+function logSession(autoComplete=false,minsOverride){
+  if(timer.on&&!autoComplete)return;
+  recordSession(minsOverride??(Number(state.profile.focusMinutes)||25));
+  if(!autoComplete)resetTimer();else{timer=idleTimer();focusView()}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tickTimer()});
+
+function bookProgress(){
+  if(!timer.on||timer.phase!=='focus')return 0;
+  const stop=timer.mode==='stopwatch',target=stop?Math.max(60,timerCfg().focus*60):Math.max(1,timer.total),el=stop?timer.sec:Math.max(0,target-timer.sec);
+  return Math.min(1,el/target);
+}
+function syncFocusLock(){
+  const el=document.getElementById('focusLockTimer');if(el)el.textContent=fmt(timer.sec);
+  const lock=document.getElementById('focusLock'),brk=timer.on&&timer.phase!=='focus',cfg=timerCfg();
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v},show=(id,on)=>{const e=document.getElementById(id);if(e)e.style.display=on?'':'none'};
+  if(lock){lock.classList.toggle('on-break',brk);lock.classList.toggle('paused',!!timer.paused)}
+  set('focusLockBadgeText',brk?(timer.phase==='long'?'LONG BREAK':'BREAK'):timer.paused?'PAUSED':timer.mode==='pomodoro'?'POMODORO '+(((timer.completed||0)%cfg.every)+1)+' OF '+cfg.every:timer.mode==='stopwatch'?'STOPWATCH':'FOCUS LOCK');
+  set('focusLockTitle',brk?'Take a breather.':timer.paused?'Paused.':'Stay with one thing.');
+  set('focusLockSub',brk?'Stretch, drink some water and rest your eyes.':timer.mode==='stopwatch'?'Finish whenever you are done. Your book grows toward your focus length.':'Stay focused while your study book grows page by page.');
+  set('flPause',timer.paused?'Resume':'Pause');
+  set('flFinish',brk?'Skip break':timer.mode==='stopwatch'?'Finish and log':'Finish early');
+  show('flExtend',timer.on&&timer.phase==='focus'&&timer.mode!=='stopwatch');
+  show('flSound',timer.on&&timer.phase==='focus');set('flSound',soundLabel());
+  const ch=document.getElementById('focusLockChapter');
+  if(ch){const c=state.chapters.find(x=>x.id===state.profile.focusChapterId),tt=taskTitle();ch.innerHTML=c?`<b>${esc(c.name)}</b><div class="mini" style="margin-top:4px">${esc(c.subject)} · ${c.mastery}% mastery</div>`:tt?`<b>${esc(tt)}</b><div class="mini" style="margin-top:4px">Task</div>`:'<b>General study session</b><div class="mini" style="margin-top:4px">Stay with the current task.</div>'}
+  updateFocusBook();
+}
+function pomodoroPanel(cfg){
+  return `<div class="focus-panel"><label><span>Break (min)</span><input class="input" id="pomBreak" type="number" min="1" max="60" value="${cfg.brk}" ${timer.on?'disabled':''}></label><label><span>Long break (min)</span><input class="input" id="pomLong" type="number" min="1" max="90" value="${cfg.longBrk}" ${timer.on?'disabled':''}></label><label><span>Long break every</span><input class="input" id="pomEvery" type="number" min="2" max="10" value="${cfg.every}" ${timer.on?'disabled':''}></label><label><span>Auto-start next focus</span><input id="pomAuto" type="checkbox" ${cfg.auto?'checked':''} ${timer.on?'disabled':''}></label></div><div class="controls" style="justify-content:center;margin:8px 0"><button class="btn soft" onclick="savePomodoro()" ${timer.on?'disabled':''}>Save Pomodoro settings</button></div>`;
+}
+</script>
+<script>
+// StudyFlow: Ambient focus soundscapes synthesized with the Web Audio API (no audio files, works offline)
+const SOUNDSCAPES=[
+  {id:'rain',name:'Rain'},{id:'ocean',name:'Ocean waves'},{id:'wind',name:'Forest wind'},
+  {id:'cafe',name:'Café murmur'},{id:'brown',name:'Brown noise'},{id:'white',name:'White noise'}
+];
+let audioCtx=null,audioGraph=null,soundOn=false,soundPreview=false;
+function audioContext(){
+  if(audioCtx)return audioCtx;
+  const AC=globalThis.AudioContext||globalThis.webkitAudioContext;
+  if(!AC)return null;
+  try{audioCtx=new AC()}catch(e){audioCtx=null}
+  return audioCtx;
+}
+function noiseBuffer(ctx,kind){
+  const rate=ctx.sampleRate||44100,len=rate*4,buf=ctx.createBuffer(1,len,rate),d=buf.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
+  for(let i=0;i<len;i++){
+    const w=Math.random()*2-1;
+    if(kind==='white')d[i]=w*.5;
+    else if(kind==='brown'){last=(last+.02*w)/1.02;d[i]=last*3.5}
+    else{ // pink (Paul Kellet)
+      b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;
+      d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926;
+    }
+  }
+  return buf;
+}
+function noiseSource(ctx,kind){const s=ctx.createBufferSource();s.buffer=noiseBuffer(ctx,kind);s.loop=true;return s}
+function lfo(ctx,rate,depth,target){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=rate;g.gain.value=depth;o.connect(g);g.connect(target);o.start();return o}
+function buildSoundscape(ctx,id,out){
+  const nodes=[],src=(k)=>{const s=noiseSource(ctx,k);nodes.push(s);return s};
+  if(id==='rain'){
+    const s=src('white'),hp=ctx.createBiquadFilter(),lp=ctx.createBiquadFilter(),g=ctx.createGain();
+    hp.type='highpass';hp.frequency.value=900;lp.type='lowpass';lp.frequency.value=9000;g.gain.value=.55;
+    s.connect(hp);hp.connect(lp);lp.connect(g);g.connect(out);
+    const r=src('brown'),rl=ctx.createBiquadFilter(),rg=ctx.createGain();rl.type='lowpass';rl.frequency.value=380;rg.gain.value=.5;r.connect(rl);rl.connect(rg);rg.connect(out);
+  }else if(id==='ocean'){
+    const s=src('brown'),lp=ctx.createBiquadFilter(),g=ctx.createGain();
+    lp.type='lowpass';lp.frequency.value=700;g.gain.value=.55;s.connect(lp);lp.connect(g);g.connect(out);
+    nodes.push(lfo(ctx,.11,.35,g.gain));
+  }else if(id==='wind'){
+    const s=src('pink'),bp=ctx.createBiquadFilter(),g=ctx.createGain();
+    bp.type='bandpass';bp.frequency.value=480;bp.Q.value=.8;g.gain.value=1.1;s.connect(bp);bp.connect(g);g.connect(out);
+    nodes.push(lfo(ctx,.07,260,bp.frequency),lfo(ctx,.13,.25,g.gain));
+  }else if(id==='cafe'){
+    const s=src('pink'),bp=ctx.createBiquadFilter(),g=ctx.createGain();
+    bp.type='bandpass';bp.frequency.value=720;bp.Q.value=.6;g.gain.value=.9;s.connect(bp);bp.connect(g);g.connect(out);
+    const s2=src('pink'),b2=ctx.createBiquadFilter(),g2=ctx.createGain();
+    b2.type='bandpass';b2.frequency.value=1700;b2.Q.value=1.2;g2.gain.value=.25;s2.connect(b2);b2.connect(g2);g2.connect(out);
+    nodes.push(lfo(ctx,.32,.18,g.gain),lfo(ctx,.21,.12,g2.gain));
+  }else if(id==='brown'){
+    const s=src('brown'),g=ctx.createGain();g.gain.value=.9;s.connect(g);g.connect(out);
+  }else{
+    const s=src('white'),lp=ctx.createBiquadFilter(),g=ctx.createGain();lp.type='lowpass';lp.frequency.value=8000;g.gain.value=.4;s.connect(lp);lp.connect(g);g.connect(out);
+  }
+  nodes.filter(n=>n.buffer!==undefined).forEach(n=>n.start());
+  return nodes;
+}
+function soundVolume(){return Math.max(0,Math.min(100,Number(state.profile.soundVolume)))/100}
+function playSound(id){
+  const ctx=audioContext();if(!ctx||!id)return false;
+  stopSoundNow();
+  try{if(ctx.resume)ctx.resume()}catch(e){}
+  const master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+  const nodes=buildSoundscape(ctx,id,master);
+  master.gain.linearRampToValueAtTime(soundVolume()*.6,(ctx.currentTime||0)+1.2);
+  audioGraph={id,master,nodes};soundOn=true;return true;
+}
+function stopSoundNow(){
+  if(!audioGraph)return;
+  const g=audioGraph;audioGraph=null;soundOn=false;
+  try{g.master.gain.cancelScheduledValues&&g.master.gain.cancelScheduledValues(0)}catch(e){}
+  g.nodes.forEach(n=>{try{n.stop()}catch(e){}});
+  try{g.master.disconnect()}catch(e){}
+}
+function startSound(){if(state.profile.sound)playSound(state.profile.sound)}
+function stopSound(){soundPreview=false;stopSoundNow()}
+function pauseSound(){if(audioCtx&&audioGraph&&audioCtx.suspend)try{audioCtx.suspend()}catch(e){}}
+function resumeSound(){if(audioCtx&&audioGraph&&audioCtx.resume)try{audioCtx.resume()}catch(e){}}
+function setSound(id){
+  state.profile.sound=SOUNDSCAPES.some(s=>s.id===id)?id:'';save();
+  if(timer.on&&timer.phase==='focus'){state.profile.sound?playSound(state.profile.sound):stopSoundNow()}
+  else if(soundPreview){state.profile.sound?playSound(state.profile.sound):stopSound()}
+  syncFocusLock();
+}
+function setSoundVolume(v){
+  state.profile.soundVolume=Math.max(0,Math.min(100,Number(v)||0));
+  if(audioGraph)try{audioGraph.master.gain.linearRampToValueAtTime(soundVolume()*.6,(audioCtx.currentTime||0)+.1)}catch(e){}
+  save();
+}
+function previewSound(){
+  if(timer.on)return;
+  if(soundPreview){stopSound();focusView();return}
+  if(!state.profile.sound){toast('Choose a soundscape first.');return}
+  if(playSound(state.profile.sound)){soundPreview=true}else toast('Audio is not available in this browser.');
+  focusView();
+}
+function toggleSoundNow(){
+  if(!timer.on||timer.phase!=='focus')return;
+  if(audioGraph){stopSoundNow()}
+  else{
+    const id=state.profile.sound||SOUNDSCAPES[0].id;
+    if(!state.profile.sound){state.profile.sound=id;save()}
+    playSound(id);
+  }
+  syncFocusLock();
+}
+function soundLabel(){const s=SOUNDSCAPES.find(x=>x.id===state.profile.sound);return audioGraph&&s?'Sound: '+s.name:'Sound off'}
+
+function soundPanel(){
+  return `<div class="focus-panel"><label><span>Ambient sound</span><select class="input" id="soundSel" onchange="setSound(this.value)"><option value="">Off</option>${SOUNDSCAPES.map(s=>`<option value="${s.id}" ${state.profile.sound===s.id?'selected':''}>${s.name}</option>`).join('')}</select></label><label><span>Volume</span><input id="soundVol" type="range" min="0" max="100" value="${Number(state.profile.soundVolume)||0}" oninput="setSoundVolume(this.value)"></label></div><div class="controls" style="justify-content:center;margin:6px 0"><button class="btn light" onclick="previewSound()" ${timer.on?'disabled':''}>${soundPreview?'Stop preview':'Preview sound'}</button></div>`;
+}
 </script>
 <script>
 // StudyFlow: Subjects, settings, onboarding, import/export and reset
@@ -591,7 +959,7 @@ function addChapter(){openSheet(`<h2>Add chapter</h2><div class="formgrid"><labe
 function saveChapterNew(){let name=document.getElementById('an').value.trim();if(!name){toast('Enter a chapter name.');return}state.chapters.push({id:uid(),subject:document.getElementById('as').value,name,status:'Not started',mastery:0,confidence:0,lastStudied:null,streak:0});save();closeModal();render();toast(`${name} added to syllabus`)}
 function openAdd(){openSheet(`<h2>Quick add</h2><div class="controls"><button class="btn" onclick="closeModal();addTest()">Test result</button><button class="btn soft" onclick="closeModal();addMistake()">Mistake</button><button class="btn light" onclick="closeModal();addChapter()">Chapter</button></div>`)}
 function weeklyReview(){let s=stats(),mins=state.sessions.slice(-20).reduce((a,x)=>a+x.minutes,0),due=state.revisions.filter(r=>!r.done&&r.date<=today()).length;openSheet(`<h2>Weekly review</h2><div class="list"><div class="item"><b>Study volume</b><div class="mini">${mins} minutes in your recent session log.</div></div><div class="item"><b>Current weak area</b><div class="mini">${esc(s.weak[0]?.name||'No weak chapter recorded')} · ${s.weak[0]?.mastery||0}% mastery.</div></div><div class="item"><b>Revision pressure</b><div class="mini">${due} revision checkpoint(s) are due.</div></div></div><p class="quote" style="margin-top:12px">Next week should not simply be “more study.” Increase work on the highest-signal weak areas and reattempt unresolved mistakes.</p><button class="btn" onclick="closeModal()">Done</button>`)}
-function openSettings(){openSheet(`<div class="row"><h2>Settings</h2><button class="btn light" onclick="closeModal()">Close</button></div><div class="formgrid"><label>Name<input class="input" id="pn" value="${esc(state.profile.name)}"></label><label>Daily goal (min)<input class="input" id="pg" type="number" min="15" max="600" value="${state.profile.dailyGoal}"></label><label class="full">Exam / curriculum focus<input class="input" id="pe" value="${esc(state.profile.exam)}" placeholder="Optional — e.g. CBSE, GCSE, university, personal"></label><label>Exam date<input class="input" id="pd" type="date" value="${esc(state.profile.examDate||'')}"></label><label>Next actions<input class="input" id="pa" type="number" min="1" max="8" value="${state.profile.actionCount}"></label><label>Focus length (min)<input class="input" id="pf" type="number" min="5" max="120" value="${state.profile.focusMinutes}"></label><label>Plan block max (min)<input class="input" id="pb" type="number" min="5" max="120" value="${state.profile.blockMax}"></label></div><div class="item" style="margin-top:12px"><b>Adaptive engine inputs</b><div class="controls" style="margin-top:9px"><label class="mini"><input id="pr" type="checkbox" ${state.profile.includeRevisions?'checked':''}> Revisions</label><label class="mini"><input id="pm" type="checkbox" ${state.profile.includeMistakes?'checked':''}> Mistakes</label><label class="mini"><input id="pc" type="checkbox" ${state.profile.includeChapters?'checked':''}> Chapters</label></div></div><div class="item" style="margin-top:12px"><b>App Lock (PIN encryption)</b><p class="muted" style="font-size:13px;margin:6px 0 10px">${lockActive?'Your data is encrypted on this device with a PIN.':'Optional: encrypt your data at rest with a PIN. If you forget it, this data cannot be recovered \u2014 export a backup first.'}</p>${lockActive?'<div class="controls"><button class="btn light" onclick="promptChangePin()">Change PIN</button><button class="btn warn" onclick="promptDisableLock()">Remove PIN lock</button></div>':'<div class="controls"><button class="btn" onclick="promptEnableLock()">Set a PIN</button></div>'}</div><div class="controls" style="margin-top:12px"><button class="btn" onclick="saveSettings()">Save settings</button><button class="btn light" onclick="exportData()">Export backup</button><button class="btn warn" onclick="importData()">Import backup</button><button class="btn danger" onclick="resetAll()">Reset app</button></div>`)}
+function openSettings(){openSheet(`<div class="row"><h2>Settings</h2><button class="btn light" onclick="closeModal()">Close</button></div><div class="formgrid"><label>Name<input class="input" id="pn" value="${esc(state.profile.name)}"></label><label>Daily goal (min)<input class="input" id="pg" type="number" min="15" max="600" value="${state.profile.dailyGoal}"></label><label class="full">Exam / curriculum focus<input class="input" id="pe" value="${esc(state.profile.exam)}" placeholder="Optional — e.g. CBSE, GCSE, university, personal"></label><label>Exam date<input class="input" id="pd" type="date" value="${esc(state.profile.examDate||'')}"></label><label>Next actions<input class="input" id="pa" type="number" min="1" max="8" value="${state.profile.actionCount}"></label><label>Focus length (min)<input class="input" id="pf" type="number" min="5" max="120" value="${state.profile.focusMinutes}"></label><label>Plan block max (min)<input class="input" id="pb" type="number" min="5" max="120" value="${state.profile.blockMax}"></label></div><div class="item" style="margin-top:12px"><b>Adaptive engine inputs</b><div class="controls" style="margin-top:9px"><label class="mini"><input id="pr" type="checkbox" ${state.profile.includeRevisions?'checked':''}> Revisions</label><label class="mini"><input id="pm" type="checkbox" ${state.profile.includeMistakes?'checked':''}> Mistakes</label><label class="mini"><input id="pc" type="checkbox" ${state.profile.includeChapters?'checked':''}> Chapters</label></div></div><div class="item" style="margin-top:12px"><b>App Lock (PIN encryption)</b><p class="muted" style="font-size:13px;margin:6px 0 10px">${lockActive?'Your data is encrypted on this device with a PIN.':'Optional: encrypt your data at rest with a PIN. If you forget it, this data cannot be recovered \u2014 export a backup first.'}</p>${lockActive?'<div class="controls"><button class="btn light" onclick="promptChangePin()">Change PIN</button><button class="btn warn" onclick="promptDisableLock()">Remove PIN lock</button></div>':'<div class="controls"><button class="btn" onclick="promptEnableLock()">Set a PIN</button></div>'}</div><div class="controls" style="margin-top:12px"><button class="btn" onclick="saveSettings()">Save settings</button><button class="btn" onclick="openCloudBackup()">Encrypted cloud backup</button><button class="btn light" onclick="exportData()">Export backup</button><button class="btn warn" onclick="importData()">Import backup</button><button class="btn danger" onclick="resetAll()">Reset app</button></div>`)}
 function openActionCustomizer(){
   const actions=Array.isArray(state.profile.customActions)?state.profile.customActions:[];
   const selected=new Set(actions.filter(x=>x.enabled!==false&&x.chapterId).map(x=>x.chapterId));
@@ -620,7 +988,7 @@ function savePlannerSettings(){
   state.profile.includeRevisions=document.getElementById('cr').checked;
   state.profile.includeMistakes=document.getElementById('cmis').checked;
   state.profile.includeChapters=document.getElementById('cch').checked;
-  timer={on:false,sec:state.profile.focusMinutes*60};
+  timer=idleTimer();
   save();closeModal();render();toast('Planner settings saved');
 }
 function saveSettings(){
@@ -634,7 +1002,7 @@ function saveSettings(){
   state.profile.includeMistakes=!!document.getElementById('pm')?.checked;
   state.profile.includeChapters=!!document.getElementById('pc')?.checked;
   state.profile.exam=(document.getElementById('pe')?.value||'').trim();
-  timer={on:false,sec:state.profile.focusMinutes*60};
+  timer=idleTimer();
   save();closeModal();render();toast('Settings saved');
 }
 function pilotSummary(){
@@ -663,11 +1031,11 @@ function savePilotConsent(){state.profile.pilotConsent=document.getElementById('
 function openOnboarding(){
   openSheet(`<div class="onboard"><div class="eyebrow">WELCOME TO STUDYFLOW</div><h2>Build a study system that fits you.</h2><div class="formgrid" style="margin-top:14px"><label>Name (optional)<input class="input" id="obName" placeholder="Your name" value="${esc(state.profile.name||'')}"></label><label>Daily study goal<input class="input" id="obGoal" type="number" min="15" max="600" value="${state.profile.dailyGoal||90}"></label><label class="full">Focus duration<input class="input" id="obFocus" type="number" min="5" max="120" value="${state.profile.focusMinutes||25}"></label></div><div class="item" style="margin-top:14px"><b>Start simple</b><div class="mini" style="margin-top:5px">StudyFlow will use your mastery, revisions, mistakes and test signals to build Today’s Plan. You can customize everything later.</div></div><div class="controls" style="margin-top:14px"><button class="btn" onclick="finishOnboarding()">Start StudyFlow</button><button class="btn light" onclick="skipOnboarding()">Skip setup</button></div></div>`);
 }
-function finishOnboarding(){state.profile.name=document.getElementById('obName').value.trim();state.profile.dailyGoal=Math.max(15,Math.min(600,Number(document.getElementById('obGoal').value)||90));state.profile.focusMinutes=Math.max(5,Math.min(120,Number(document.getElementById('obFocus').value)||25));state.profile.onboarded=true;save();timer={on:false,sec:state.profile.focusMinutes*60};closeModal();render()}
+function finishOnboarding(){state.profile.name=document.getElementById('obName').value.trim();state.profile.dailyGoal=Math.max(15,Math.min(600,Number(document.getElementById('obGoal').value)||90));state.profile.focusMinutes=Math.max(5,Math.min(120,Number(document.getElementById('obFocus').value)||25));state.profile.onboarded=true;save();timer=idleTimer();closeModal();render()}
 function skipOnboarding(){state.profile.onboarded=true;save();closeModal();render()}
 function exportData(){if(lockActive&&!confirm('App Lock is on, but exported backup files are always plain, unencrypted JSON (so you can restore them without losing your PIN separately). Anyone with this file can read your data. Continue?'))return;let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='studyflow-final-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);state.profile.lastBackupAt=today();save()}
-function maybeSuggestBackup(){try{let last=state.profile.lastBackupAt,days=last?Math.floor((new Date(today())-new Date(last))/86400000):999;if((state.sessions||[]).length>=5&&days>=14)toast('It has been a while since your last backup — Settings → Export backup keeps your data safe.')}catch(e){}}
-function importData(){let i=document.createElement('input');i.type='file';i.accept='.json';i.onchange=()=>{let f=i.files[0],r=new FileReader();r.onload=()=>{try{state=migrate(JSON.parse(r.result));save();closeModal();render()}catch(e){toast('Import failed: invalid or unsupported backup.');console.error(e)}};r.readAsText(f)};i.click()}
+function maybeSuggestBackup(){try{let last=state.profile.lastBackupAt,days=last?Math.floor((new Date(today())-new Date(last))/86400000):999;if((state.sessions||[]).length>=5&&days>=14)toast('It has been a while since your last backup — Settings → Encrypted cloud backup keeps your data safe.')}catch(e){}}
+function importData(){let i=document.createElement('input');i.type='file';i.accept='.json,.sfbackup';i.onchange=()=>{let f=i.files[0],r=new FileReader();r.onload=()=>{try{const raw=JSON.parse(r.result);if(raw&&raw.format==='studyflow-backup'){closeModal();openCloudBackup();toast('This file is encrypted. Choose it under Restore.');return}state=migrate(raw);state=validateState();timer=idleTimer();save();closeModal();render()}catch(e){toast('Import failed: invalid or unsupported backup.');console.error(e)}};r.readAsText(f)};i.click()}
 function resetAll(){
   // Reset immediately. No browser confirm() is used because embedded/file previews
   // can block or ignore native confirmation dialogs.
@@ -695,7 +1063,7 @@ function resetAll(){
     state.profile.customPlan=[];
     state.profile.focusChapterId='';
 
-    timer={on:false,sec:(state.profile.focusMinutes||25)*60};
+    timer=idleTimer();
     tab='Today';
 
     // Persist only the fresh state, then render from that exact in-memory state.
@@ -710,6 +1078,75 @@ function resetAll(){
 }
 </script>
 <script>
+// StudyFlow: Encrypted backups for your own cloud (zero-knowledge: the passphrase never leaves the device)
+// File format: { format, v, kdf, iter, salt, iv, data, created } with AES-GCM; the header is authenticated.
+const BACKUP_FORMAT='studyflow-backup',BACKUP_ITER=250000,BACKUP_AAD='studyflow-backup:v1';
+function bkB64e(buf){let s='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)}
+function bkB64d(str){return Uint8Array.from(atob(str),c=>c.charCodeAt(0))}
+async function bkKey(pass,salt,iter){
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function backupEncrypt(data,pass){
+  if(!pass||pass.length<8)throw new Error('Passphrase must be at least 8 characters');
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await bkKey(pass,salt,BACKUP_ITER);
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:new TextEncoder().encode(BACKUP_AAD)},key,new TextEncoder().encode(JSON.stringify(data)));
+  return {format:BACKUP_FORMAT,v:1,kdf:'PBKDF2-SHA256',iter:BACKUP_ITER,salt:bkB64e(salt),iv:bkB64e(iv),data:bkB64e(ct),created:new Date().toISOString()};
+}
+async function backupDecrypt(env,pass){
+  if(!env||env.format!==BACKUP_FORMAT||env.v!==1)throw new Error('Not a StudyFlow encrypted backup');
+  const iter=Number(env.iter);
+  if(!(iter>=100000&&iter<=2000000))throw new Error('Unsupported backup settings');
+  const key=await bkKey(pass,bkB64d(env.salt),iter);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:bkB64d(env.iv),additionalData:new TextEncoder().encode(BACKUP_AAD)},key,bkB64d(env.data));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+function openCloudBackup(){
+  openSheet(`<div class="row"><h2>Encrypted cloud backup</h2><button class="btn light" onclick="closeModal()">Close</button></div>
+<p class="muted">Your data is encrypted on this device with your passphrase, then saved to a file you keep in your own cloud (Google Drive, iCloud, Dropbox). The cloud only ever sees scrambled data. <b>If you forget the passphrase, the backup cannot be recovered.</b></p>
+<div class="eyebrow" style="margin-top:12px">BACK UP</div>
+<div class="formgrid"><label>Passphrase (8+ characters)<input class="input" id="bkPass" type="password" autocomplete="new-password"></label><label>Repeat passphrase<input class="input" id="bkPass2" type="password" autocomplete="new-password"></label></div>
+<div class="controls" style="margin-top:10px"><button class="btn" onclick="runCloudBackup()">Create encrypted backup</button></div>
+<div class="mini" id="bkMsg" style="min-height:18px;margin-top:8px"></div>
+<div class="eyebrow" style="margin-top:14px">RESTORE</div>
+<div class="formgrid"><label>Backup file<input class="input" id="bkFile" type="file" accept=".sfbackup,.json,application/json"></label><label>Passphrase<input class="input" id="bkPass3" type="password" autocomplete="off"></label></div>
+<div class="controls" style="margin-top:10px"><button class="btn warn" onclick="runCloudRestore()">Restore and replace my data</button></div>`);
+}
+function bkMsg(t,bad){const e=document.getElementById('bkMsg');if(e){e.textContent=t;e.style.color=bad?'#b65d4b':''}}
+async function runCloudBackup(){
+  const p1=document.getElementById('bkPass')?.value||'',p2=document.getElementById('bkPass2')?.value||'';
+  if(p1.length<8){bkMsg('Use a passphrase of at least 8 characters.',true);return}
+  if(p1!==p2){bkMsg('The passphrases do not match.',true);return}
+  try{
+    bkMsg('Encrypting…');
+    const env=await backupEncrypt(state,p1),name='studyflow-'+today()+'.sfbackup',blob=new Blob([JSON.stringify(env)],{type:'application/json'});
+    let shared=false;
+    try{
+      const file=new File([blob],name,{type:'application/json'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'StudyFlow encrypted backup'});shared=true}
+    }catch(e){if(e&&e.name==='AbortError'){bkMsg('Cancelled.');return}}
+    if(!shared){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+    state.profile.lastBackupAt=today();state.profile.lastCloudBackupAt=today();save();
+    bkMsg(shared?'Backup ready. Save it to your cloud app.':'Downloaded. Upload the file to your cloud storage.');
+    toast('Encrypted backup created.');
+  }catch(e){console.error(e);bkMsg('Backup failed. Please try again.',true)}
+}
+async function runCloudRestore(){
+  const file=document.getElementById('bkFile')?.files?.[0],pass=document.getElementById('bkPass3')?.value||'';
+  if(!file){bkMsg('Choose a backup file first.',true);return}
+  if(!pass){bkMsg('Enter the backup passphrase.',true);return}
+  let env;
+  try{env=JSON.parse(await file.text())}catch(e){bkMsg('That file is not a valid backup.',true);return}
+  let data;
+  try{data=await backupDecrypt(env,pass)}catch(e){bkMsg(e&&/Not a StudyFlow|Unsupported/.test(e.message)?e.message+'.':'Wrong passphrase or damaged file.',true);return}
+  if(!confirm('Replace all current data with this backup?'))return;
+  try{
+    state=migrate(data);state=validateState();timer=idleTimer();save();closeModal();render();applyTheme();toast('Backup restored.');
+  }catch(e){console.error(e);toast('Restore failed: backup data is not compatible.')}
+}
+if(typeof module!=='undefined'&&module.exports)module.exports={backupEncrypt,backupDecrypt};
+</script>
+<script>
 // StudyFlow: Dialogs, global listeners and swipe navigation
 function openSheet(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('open')}
 function closeModal(){if(timer.on)return;document.getElementById('modal').classList.remove('open')}
@@ -717,7 +1154,7 @@ document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='
 document.addEventListener('visibilitychange',()=>{if(timer.on && document.visibilityState==='visible'){requestWakeLock();toast('Focus Lock is still running. Stay with your session.');updateFocusLockClock()}});
 window.addEventListener('popstate',e=>{if(timer.on){history.pushState(null,'',location.href);e.preventDefault()}});
 window.addEventListener('beforeunload',()=>{save()});
-(function(){const order=['Today','Syllabus','Backlog','Revision','Mistakes','Tests','Focus','Progress'];let sx=0,sy=0,active=false;const app=document.getElementById('app');if(!app)return;app.addEventListener('touchstart',e=>{if(timer.on||document.getElementById('modal').classList.contains('open'))return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;active=true},{passive:true});app.addEventListener('touchend',e=>{if(!active)return;active=false;let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.4)return;let i=order.indexOf(tab);if(dx<0&&i<order.length-1)go(order[i+1]);else if(dx>0&&i>0)go(order[i-1])},{passive:true});})();
+(function(){const order=['Today','Syllabus','Backlog','Tasks','Revision','Mistakes','Tests','Focus','Progress'];let sx=0,sy=0,active=false;const app=document.getElementById('app');if(!app)return;app.addEventListener('touchstart',e=>{if(timer.on||document.getElementById('modal').classList.contains('open'))return;sx=e.touches[0].clientX;sy=e.touches[0].clientY;active=true},{passive:true});app.addEventListener('touchend',e=>{if(!active)return;active=false;let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.4)return;let i=order.indexOf(tab);if(dx<0&&i<order.length-1)go(order[i+1]);else if(dx>0&&i>0)go(order[i-1])},{passive:true});})();
 </script>
 <script>
 // StudyFlow: Error reporting and application boot
